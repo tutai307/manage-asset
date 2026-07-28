@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(php artisan test:*)",
+      "Bash(php artisan migrate:status)",
+      "Bash(php artisan route:list:*)",
+      "Bash(php artisan about:*)",
+      "Bash(php artisan tinker --execute:*)",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(composer show:*)",
+      "Bash(composer audit:*)",
+      "Bash(npm run build:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(composer require:*)",
+      "Bash(composer remove:*)",
+      "Bash(npm install:*)"
+    ],
+    "deny": [
+      "Bash(php artisan migrate:fresh:*)",
+      "Bash(php artisan db:wipe:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Read(.env)",
+      "Read(./storage/**)"
+    ]
+  },
+  "env": {
+    "APP_TIMEZONE": "Asia/Ho_Chi_Minh"
+  }
+}
