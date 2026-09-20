@@ -5,7 +5,67 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/*
+ * Design tokens.
+ *
+ * Ground and lines are cool neutrals biased towards the brand hue, so greys read as chosen
+ * rather than inherited. One accent (brand, a steel blue) carries interactive meaning; the
+ * semantic colours below are reserved for state and are never used as decoration.
+ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-ground: oklch(0.977 0.004 230);
+    --color-surface: #ffffff;
+    --color-line: oklch(0.912 0.006 230);
+    --color-line-strong: oklch(0.85 0.008 230);
+
+    --color-ink: oklch(0.26 0.02 245);
+    --color-ink-muted: oklch(0.52 0.015 245);
+    --color-ink-subtle: oklch(0.64 0.012 245);
+
+    --color-brand-50: oklch(0.965 0.017 225);
+    --color-brand-100: oklch(0.925 0.035 225);
+    --color-brand-200: oklch(0.86 0.06 225);
+    --color-brand-600: oklch(0.52 0.115 231);
+    --color-brand-700: oklch(0.44 0.105 233);
+    --color-brand-900: oklch(0.29 0.07 235);
+
+    /* Reserved for state only. */
+    --color-good: oklch(0.55 0.12 155);
+    --color-good-soft: oklch(0.955 0.03 155);
+    --color-warn: oklch(0.62 0.13 75);
+    --color-warn-soft: oklch(0.96 0.045 85);
+    --color-bad: oklch(0.55 0.17 22);
+    --color-bad-soft: oklch(0.96 0.03 22);
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* A bordered surface. Shadow is spent only on things that float (menus, toasts). */
+@utility card {
+    @apply rounded-xl border border-line bg-surface;
+}
+
+@utility btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-line-strong hover:bg-ground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600;
+}
+
+@utility btn-quiet {
+    @apply inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600;
+}
+
+@utility form-input {
+    @apply block w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-ink transition placeholder:text-ink-subtle focus:border-brand-600 focus:ring-2 focus:ring-brand-100 focus:outline-none;
+}
+
+@utility label-eyebrow {
+    @apply text-xs font-semibold tracking-wide text-ink-subtle uppercase;
 }

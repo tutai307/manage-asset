@@ -67,6 +67,9 @@ return [
 
     'timezone' => 'UTC',
 
+    // Dates are stored in UTC and shown to users in this timezone.
+    'display_timezone' => env('APP_DISPLAY_TIMEZONE', 'Asia/Ho_Chi_Minh'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -78,7 +81,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'vi'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
