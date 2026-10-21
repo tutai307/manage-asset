@@ -17,28 +17,24 @@ Commands: `/sprint-plan`, `/sprint-status`, `/sprint-review`, `/retro`.
 
 ## Velocity
 
-Updated at every sprint close by `scrum-master`.
+Updated at every sprint close by `scrum-master`. Source for each row: that sprint's `goal.md`.
 
-| Sprint | Dates | Goal | Committed | Completed | Notes |
-| --- | --- | --- | --- | --- | --- |
-| — | — | _no sprint has started_ | — | — | Phase 0: discovery not yet done |
+| Sprint | Dates | Goal | Committed | Built | Accepted | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| [1](sprint-01/goal.md) | 2026-09-18 → 09-24 | Sign in, study a topic with Vietnamese support, typed role-play | 22 SP | 27 SP | — | AM-014 and AM-015 added mid-sprint (+8). AM-T01 blocked on the API key, finished in sprint 2. |
+| [2](sprint-02/goal.md) | 2026-09-21 → 09-27 | Speak instead of typing, hints, AI feedback | 12 SP | 25 SP | — | AM-T01 carried over; AM-016 and AM-017 added after discovery Session 11. |
+| [3](sprint-03/goal.md) | 2026-09-23 → 09-29 | Four-skills practice tied to the unit's vocabulary | 29 SP | 37 SP | — | AM-023 added after discovery Session 13. |
 
-**Average velocity:** not established.
+**Average velocity:** not established. No sprint has been closed with a review or a retrospective,
+so nothing has been formally accepted by the customer, and sprints 1–3 overlapped. Treat the
+"Built" column as an upper bound, not a plan.
 
 Velocity is a **planning input only**. It is not a productivity measure, it is never shown to the
-customer as one, and estimates are never inflated to make it rise. Sprints 1 and 2 have no velocity
-to plan against — commit small and label the commitment "capacity unknown".
+customer as one, and estimates are never inflated to make it rise.
 
 ---
 
-## Before sprint 1
+## Before the next sprint opens
 
-Sprint 1 does not open until the Phase 0 checklist in
-[../process/agile-scrum.md](../process/agile-scrum.md) is complete — in particular the customer's
-current Excel file or paper process, the scale numbers, and a first epic broken into `Ready`
-stories.
-
-When it does open, aim sprint 1 at the **thinnest vertical slice that proves the core model**:
-one asset can be registered with a code, given a location, and found again. Not reporting, not
-depreciation, not import. Everything else is easier to build once that slice is real and the
-customer has seen it.
+Close sprints 1–3 properly first: a review with the customer (accept or reject each built item),
+one retrospective, and a commitment no larger than what the review shows was accepted.

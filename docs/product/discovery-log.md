@@ -42,142 +42,16 @@ One entry per session, newest at the bottom.
 
 ---
 
-## 2026-07-29 — Session 1: the origin of the request
+## 2026-07-29 → 07-30 — Sessions 1–3: the original topic (parked)
 
-**Asked about:** what problem the software is actually meant to solve.
+The first request was a different product for the same competition. It was replaced in Session 4
+and is not part of English Buddy. The facts that still apply:
 
-**Learned:**
-- Schools across Quảng Ninh province are having **air conditioners installed free of charge**.
-- The request as given to the customer: track per-class AC electricity usage, aggregate the cost,
-  and derive a usage level so the school can see which classes use more or less.
-- The request came from a **teacher**, not from the school's asset officer.
-- The customer's own judgement: the request as stated is too simple — "just install meters and
-  report". They proposed widening it into a school asset management system with electricity usage
-  as one module.
-
-**Discussed (delivery lead's assessment, not yet a decision):**
-- The stated request is a *solution*, not a problem. The underlying problem is that a large new
-  electrical load is arriving with no matching budget, no accountability and no maintenance plan.
-- Air conditioners **are assets**, so consumption should be modelled as a dimension of an asset in a
-  room used by a class — not as a bolted-on "AC module".
-- ⚠️ Ranking classes by **raw kWh is unfair and will be rejected by teachers**: a top-floor,
-  west-facing room with 45 students will always consume more than a ground-floor, north-facing room
-  with 32. Any ranking must compare against a **predicted baseline**, not against other classes.
-- Dirty filters materially increase AC power draw, so consumption data doubles as a maintenance
-  signal. This links the two halves of the system.
-
-**Open:** how electricity data is captured; who pays for it; what kind of project this is.
-
-**Assumptions made:** none recorded as binding. All of the above was presented to the customer as
-assessment, explicitly open to challenge.
-
-**Backlog impact:** none — deliberately. The three open questions above change the data model.
-
----
-
-## 2026-07-29 — Session 2: the three blocking answers
-
-**Asked about:** metering method, who pays, project type and timeline.
-
-**Learned — these are confirmed by the customer:**
-
-1. **Every classroom already has its own electricity meter.**
-   → The system *measures*, it does not estimate. Per-class attribution is possible and defensible.
-
-2. **The school pays the electricity bill. It is free for students.**
-   → There is no billing. Per-class figures are for budget control and behaviour, not for
-   collecting money. See the consequence below.
-
-3. **This is a "sản phẩm sáng tạo" — a creative/innovation competition entry, on behalf of
-   THPT Đông Mai, Quảng Ninh.**
-   → ⚠️ **This is the single most important fact in this log.** The real audience is a competition
-   jury, not a school asset officer. It changes what "good" means for this product.
-
-**Consequences identified by the delivery lead:**
-
-- **Split incentive is the actual problem.** The users consuming the electricity (students) pay
-  nothing, and the party paying (the school) cannot see or influence usage. With no price signal
-  there is no reason for anyone to save. The product's real job is to **replace the missing price
-  signal with a fair, visible, non-monetary one** — which fits the thi đua (emulation) system a
-  Vietnamese school already runs.
-- Because nobody is billed, **audit-grade billing precision is not required**. This lowers the bar
-  on measurement accuracy and raises it on *fairness of comparison*.
-- Because the audience is a jury, **generic asset-management CRUD (kiểm kê, thanh lý, khấu hao,
-  statutory forms) is a liability, not an asset.** It is administrative software, it is seen every
-  year, and it dilutes the novelty. This **reverses part of the Session 1 assessment** and is being
-  put to the customer explicitly rather than applied silently.
-- Note: Session 1 discussed a lower-secondary school (cấp 2); the confirmed target is a **THPT**
-  (upper secondary). Older students can plausibly be participants in data collection and in an
-  energy-saving club, not just subjects of measurement.
-
-**Open (asked, not yet answered):**
-- Competition deadline, and how much time is available before submission.
-- Meter type: mechanical dial or electronic? Does it have a pulse LED / output port?
-- Is adding hardware to the school's electrical installation permitted?
-- Number of classrooms, classes and staff.
-- Whether real measured data can be collected before submission — a measured saving is the
-  strongest possible evidence for a jury.
-
-**Assumptions made:** none binding. The scope pivot in the next section is a **proposal awaiting the
-customer's decision**, not a change already applied.
-
-**Backlog impact:** still none. Deliberate — the scope pivot must be accepted or rejected first.
-
----
-
-## 2026-07-30 — Session 3: deadline and meter type
-
-**Asked about:** competition deadline, meter type, whether real data can be collected.
-
-**Learned — confirmed by the customer:**
-
-1. **Competition is in November 2026.** Roughly 3.5 months from today.
-2. **The meters are mechanical (công tơ kim quay)** — induction type with a rotating aluminium disc
-   and a drum digit counter. **No pulse LED, no output port, no LCD.**
-3. **Real measured data can be collected** before submission.
-
-**Customer's own estimate:** "1 tháng là xong" — the software itself can be built quickly.
-
-**Delivery lead's assessment — the binding constraint is not coding time:**
-
-- **The AC season in northern Vietnam ends.** Quảng Ninh is hot roughly May–September; by November
-  air conditioners are barely used. Consumption data that shows nothing cannot be analysed.
-- **The school year starts in early September.** Before that, classrooms are empty and produce no
-  usage data.
-- ⇒ The usable data-collection window is approximately **September to mid-October** — about six
-  weeks, and it cannot be compressed by working faster.
-- Working backwards from a November submission, the **data-collection system must be running by the
-  end of August**. Everything else (EEI model, ranking, forecasting, assistant) is built *during*
-  the collection window, in parallel with data arriving.
-- The customer's one-month estimate is therefore correct, but applies to the collection module
-  only — not to the whole system.
-
-**Consequences of the meter being mechanical:**
-
-- ❌ The previously proposed hardware option (photodiode on a pulse LED) is **not possible** — these
-  meters have no pulse LED.
-- ✅ Replacement: a **reflective optical sensor (e.g. TCRT5000) aimed at the rotating aluminium
-  disc**, counting the black index mark. Meter face prints a constant (typically 450 or 900
-  rev/kWh) which converts revolutions to kWh. Non-invasive — mounted on the meter glass, nothing
-  wired into the mains.
-- OCR is **harder** on a mechanical drum counter than on an LCD, because digits are frequently
-  caught mid-rotation. This is the interesting technical problem, not a flaw.
-- Mitigation, and a defensible engineering point: cross-check every AI reading against **physical
-  plausibility** — a new reading must be ≥ the previous one, and the increment must fall within a
-  feasible range for the elapsed time and the room's connected load. Business logic validates the
-  model's output.
-
-**Open (blocking):**
-- ⚠️ **When are the air conditioners actually installed?** If they land in October there is no
-  meaningful consumption to measure and the evidence strategy must change to a cross-sectional
-  comparison (rooms with AC vs without, at the same time) instead of before/after.
-- Number of classrooms; meter constant printed on the meter face; a photo of an actual meter.
-- The scope reduction proposed in Session 2 (§4–5 of vision.md) is **still unconfirmed**.
-
-**Assumptions made:** the seasonal and school-year reasoning above is the delivery lead's, based on
-northern Vietnam's climate, and was stated to the customer as reasoning rather than fact.
-
-**Backlog impact:** none yet — pending the AC installation date and the scope decision.
+- The project is a **"sản phẩm sáng tạo" (creative/innovation) competition entry**. The real
+  audience is the **jury**, so novelty and a visible, measured result matter more than
+  administrative completeness.
+- The full record of those sessions is in git history (commit `0d4c3a0`), should the topic ever
+  return.
 
 ---
 
@@ -394,3 +268,15 @@ teachers editing the parts they want — generating unit by unit with AI costs t
   material.
 
 **Backlog impact:** AM-023 created and built; AM-009 closed (covered by AM-017).
+
+---
+
+## 2026-10-21 — Session 14: school level settled
+
+**Learned — confirmed by the customer:** the product is for **THCS, grades 6–9**. This resolves the
+conflict between Session 2 ("THPT Đông Mai") and Session 6. The school's name is not recorded until
+the customer gives it.
+
+**Decided:** `vision.md`, `CLAUDE.md` and the README describe THCS 6–9 only.
+
+**Backlog impact:** none.

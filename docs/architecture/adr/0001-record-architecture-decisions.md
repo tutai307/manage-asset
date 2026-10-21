@@ -3,12 +3,13 @@
 - **Status:** Accepted
 - **Date:** 2026-07-29
 - **Deciders:** delivery lead
+- **Context revised:** 2026-10-21, for the current product. Decision unchanged.
 
 ## Context
 
-`manage-asset` will be built incrementally against requirements that are not yet known, then handed
-to a school's IT staff to maintain. Several decisions ahead of us are expensive to reverse: the
-database engine, the permission model, how audit history is stored, how assets are identified.
+English Buddy is built incrementally against requirements that are discovered sprint by sprint, then
+handed to a school's staff to maintain. Several decisions are expensive to reverse: the
+database engine, the permission model, the AI provider, and what content we may store.
 
 Code records what was built. It does not record what was considered and rejected, or which
 constraint forced a choice. Six months from now — or after a handover — that missing context is what

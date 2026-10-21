@@ -465,5 +465,5 @@ know how often hints were used; revisit with AM-012.
 
 | # | Question | Blocks | Asked | Answered |
 | --- | --- | --- | --- | --- |
-| 1 | THCS or THPT — which school and level does the entry represent? | Content level, personas | 2026-09-17 | — |
+| 1 | THCS or THPT — which school and level does the entry represent? | Content level, personas | 2026-09-17 | 2026-10-21 — THCS, grades 6–9 (discovery Session 14) |
 | 2 | Does the teacher approve the 12 starter topics? | AM-003 content | 2026-09-17 | — |

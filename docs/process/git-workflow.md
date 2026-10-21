@@ -18,7 +18,7 @@ reverted, and destroys the traceability from code back to a customer requirement
 
 ```bash
 git switch main && git pull
-git switch -c feature/AM-014-transfer-asset
+git switch -c feature/AM-021-unit-test
 ```
 
 ---
@@ -28,12 +28,12 @@ git switch -c feature/AM-014-transfer-asset
 Conventional Commits, with the story ID:
 
 ```
-feat(AM-014): record asset transfer with location history
-fix(AM-B03): normalise Vietnamese diacritics in asset search
-test(AM-014): cover department-scoped transfer permissions
-docs: add ADR-0004 on the role and permission model
+feat(AM-021): unit test built from the unit's vocabulary
+fix(AM-B03): keep Vietnamese diacritics in generated vocabulary
+test(AM-021): students cannot open another grade's test
+docs: add ADR on hosting for the trial
 chore: configure Pint in CI
-refactor(AM-014): extract TransferAsset action from the Livewire component
+refactor(AM-021): extract GradeUnitTest action from the Livewire component
 ```
 
 - Present-tense imperative, lower case after the colon.
@@ -64,7 +64,7 @@ A story branch merges into `main` only when:
 - `code-reviewer` has approved, and `security-auditor` too if auth, permissions, upload or import
   were touched
 
-Prefer a merge commit or a squash that keeps the story ID in the subject, so `git log --grep=AM-014`
+Prefer a merge commit or a squash that keeps the story ID in the subject, so `git log --grep=AM-021`
 finds the whole story later.
 
 ---
@@ -81,6 +81,6 @@ finds the whole story later.
 
 ## `.gitignore`
 
-The Laravel defaults, plus anything that holds real data. If the customer sends their existing
-asset spreadsheet, it goes somewhere gitignored — **it contains real staff names and real asset
-values and must not enter the repository.**
+The Laravel defaults, plus anything that holds real data. If the customer sends a class list,
+student results or a trial export, it goes in `docs/customer-data/` (gitignored) — **it contains
+real children's names and must not enter the repository.**

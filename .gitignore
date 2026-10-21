@@ -27,6 +27,6 @@ Thumbs.db
 /database/*.sqlite
 /database/*.sqlite-journal
 
-# Customer-supplied files (real staff names, real asset values) — must never enter the repo
+# Customer-supplied files (real student and teacher names) — must never enter the repo
 /docs/customer-data/
 

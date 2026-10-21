@@ -32,9 +32,14 @@ There is no "done except for tests" and no "done, will polish next sprint". Part
 **Data**
 - [ ] Migration applies and rolls back cleanly
 - [ ] Foreign keys have explicit `onDelete` behaviour and an index
-- [ ] Money is `decimal`, never float
-- [ ] Any change to an asset's location, custodian or status writes a history row
-- [ ] Nothing hard-deletes a record of value
+- [ ] Models marked append-only (messages, reviews, attempts, reveals) are never updated or deleted
+- [ ] Seeders never overwrite content a teacher has approved or edited
+- [ ] Nothing hard-deletes a user or a class
+
+**AI and student data**
+- [ ] No student name, username or other personal data in any request to the AI provider — asserted by a test
+- [ ] Tests fake the AI (`Http::fake`); the provider being down shows a friendly retry, not an error page
+- [ ] AI-generated content stays a draft until a teacher publishes it
 
 **Interface**
 - [ ] `npm run build` succeeds
@@ -67,7 +72,7 @@ There is no "done except for tests" and no "done, will polish next sprint". Part
 
 ## Why this bar
 
-An asset register is a **system of record**. A subtle defect does not crash — it quietly records the
-wrong location or loses a transfer, and nobody notices until the annual kiểm kê, by which point the
-data cannot be reconstructed. That is why authorization tests, history rows and the negative cases
-are non-negotiable here rather than nice-to-have.
+The users are **minors**, and the product puts AI output in front of them. A subtle defect does not
+crash — it leaks a student's name to a third party, shows one class another class's work, or
+publishes an unchecked AI exercise to forty children. That is why authorization tests, the
+no-personal-data assertion and the negative cases are non-negotiable here rather than nice-to-have.

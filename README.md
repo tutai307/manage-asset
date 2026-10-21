@@ -1,59 +1,39 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# English Buddy
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web app where lower-secondary students (THCS, grades 6–9) practise everyday English with an AI
+role-play partner, on content aligned to the *Tiếng Anh 6–9 Global Success* syllabus. Vietnamese
+support fades as the student improves; teachers create classes, approve content and follow progress.
 
-## About Laravel
+Built with Laravel 12, Livewire 4, Tailwind CSS 4 and MySQL 8; AI through OpenRouter.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> The GitHub repository is still named `manage-asset` for historical reasons — see
+> [docs/product/discovery-log.md](docs/product/discovery-log.md), Sessions 1–4.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Getting started
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Requirements: PHP 8.2, Composer, Node.js, MySQL 8.
 
-## Learning Laravel
+1. Create a MySQL database (the name the project expects is in [.env.example](.env.example)).
+2. Run `composer run setup` — installs dependencies, creates `.env` from `.env.example`, migrates
+   and builds assets. The steps are defined in [composer.json](composer.json).
+3. Put the OpenRouter key in `.env` as `OPENROUTER_API_KEY`. Without it, everything except the AI
+   features works.
+4. `php artisan db:seed` (development only) loads the syllabus, starter topics and ready-made
+   lessons for all 48 units with no AI calls, plus demo accounts — see
+   [DatabaseSeeder](database/seeders/DatabaseSeeder.php) for their usernames.
+5. `composer run dev` starts the server, queue worker and Vite together.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Tests: `php artisan test` (runs on in-memory SQLite, never calls the real AI).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Documentation
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Read this | For |
+| --- | --- |
+| [CLAUDE.md](CLAUDE.md) | Hard rules for anyone changing the code, human or AI |
+| [docs/product/vision.md](docs/product/vision.md) | What the product is for, scope, open questions |
+| [docs/product/backlog.md](docs/product/backlog.md) | What is built and what is next (`AM-###` items) |
+| [docs/product/discovery-log.md](docs/product/discovery-log.md) | Why each requirement exists, session by session |
+| [docs/product/personas.md](docs/product/personas.md) · [glossary.md](docs/product/glossary.md) | Roles and vocabulary |
+| [docs/architecture/tech-stack.md](docs/architecture/tech-stack.md) · [adr/](docs/architecture/adr/) | Technical choices and the decisions behind them |
+| [docs/process/](docs/process/) | Scrum process, Definition of Ready / Done, git workflow |
+| [docs/sprints/](docs/sprints/) | Sprint goals, boards and velocity |

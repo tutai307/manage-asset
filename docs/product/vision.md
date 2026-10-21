@@ -1,16 +1,16 @@
 # Product vision — bilingual communicative English trainer
 
 > **Status: direction confirmed, details partially filled.** `_TBD_` marks what the customer has not
-> yet answered. Source of every confirmed fact: [discovery-log.md](discovery-log.md) (Sessions 4–5).
+> yet answered. Source of every confirmed fact: [discovery-log.md](discovery-log.md) (Sessions 4–13).
 > The earlier electricity/AC topic is parked — see Sessions 1–3 of the log.
 >
-> Note: the repository is still named `manage-asset`; renaming is an open housekeeping decision.
+> Note: the GitHub repository is still named `manage-asset`; the local folder is `english-buddy`.
 
 ---
 
 ## 1. The problem
 
-Students at THPT Đông Mai learn English grammar and vocabulary but struggle to **use basic
+Lower-secondary (THCS) students learn English grammar and vocabulary but struggle to **use basic
 communicative sentences** — to say something, respond, and hold a short exchange. Class time gives
 each student very little speaking practice, practice at home has no partner and no feedback, and a
 teacher cannot personally correct forty students.
@@ -22,29 +22,39 @@ teacher cannot see or control it, and it gives no Vietnamese scaffolding for wea
 
 | | Value |
 | --- | --- |
-| School | THPT Đông Mai, Quảng Ninh — public upper secondary |
+| School | **THCS (lower secondary)**, grades 6–9 — confirmed by the customer, superseding the earlier "THPT" in Session 2. School name _TBD_. |
 | Real audience | A **"sản phẩm sáng tạo" competition jury**; AI use is expected to raise creativity |
 | Subject | **English** — basic communicative sentences |
 | Users | Students (learn/practise) and English teachers (prepare, approve, monitor) |
 | Devices | **Computers**, at school or at home, no restriction |
-| Grades / textbook | _TBD_ |
-| Number of classes / students in a trial | _TBD_ |
+| Level | Roughly CEFR A1–A2 |
+| Syllabus | **Tiếng Anh 6–9 Global Success** — 48 units; structure only, never the books' content ([ADR-0005](../architecture/adr/0005-curriculum-alignment-and-copyright.md)) |
+| Trial | 1–2 classes, with a pre/post test run by the teacher |
 
 ## 3. The product in one flow
 
-1. Teacher picks a communication **topic** (e.g. greetings, asking for directions, shopping).
-2. AI **drafts a bilingual lesson pack**: key sentence patterns (EN ↔ VI), a model dialogue,
-   situations for role-play, and a short quiz.
-3. **Teacher reviews, edits and approves.** Nothing AI-generated reaches students unapproved.
+1. Each grade's **units** follow the syllabus. Every unit holds the **vocabulary and grammar** the
+   class is learning, entered or approved by the teacher; ready-made content for all 48 units ships
+   with the product so no teacher has to generate it.
+2. Practice for the **four skills** is restricted to that vocabulary: reading, listening and
+   writing exercises, and speaking through role-play on the unit's communication topics. AI can
+   draft extra material.
+3. **Teacher reviews, edits and publishes.** Nothing AI-generated reaches students unpublished.
 4. Students learn with **Vietnamese support that fades** (full VI → hints only → English only) and
    **practise speaking with an AI role-play partner**, receiving feedback.
 5. Teacher dashboard shows which sentence patterns the class gets wrong.
 
-## 4. Features — PROPOSED, accepted in principle
+## 4. Features — accepted in principle
 
-**Foundation (thin):** login with teacher/student roles; classes; topics and lessons.
+What is built and what is next is owned by [backlog.md](backlog.md); this list is the intended
+shape of the product.
+
+**Foundation (thin):** login with teacher/student roles; classes; VI/EN interface switch.
 
 **Core (deep, AI-assisted):**
+- Syllabus units per grade, each with a teacher-approved vocabulary and grammar focus
+- Reading, listening and writing practice per unit, restricted to that focus; writing marked by AI
+- Unit tests, review tests and term exams
 - AI-drafted lesson pack with teacher approval
 - Bilingual sentence patterns with fading Vietnamese support and pronunciation (text-to-speech)
 - **AI role-play conversation** in a situation, by text and by voice, with bilingual hints on request
@@ -56,15 +66,16 @@ teacher cannot see or control it, and it gives no Vietnamese scaffolding for wea
 
 ## 5. Out of scope
 
-Grammar-course content, full exams, parent accounts, mobile apps, payment.
+A grammar course, reproducing the textbooks' own exercises or audio (needs a publisher licence —
+ADR-0005), parent accounts, mobile apps, payment.
 
 ## 6. Constraints
 
 | | |
 | --- | --- |
-| Deadline | November 2026 — _exact date TBD_ |
-| AI provider and budget | _TBD — who pays for API usage_ |
-| Voice | Browser speech APIs on computers; exact browser support to be verified in a spike |
+| Deadline | **As soon as possible** (Session 6); no exact submission date given — _TBD_ |
+| AI provider and budget | **OpenRouter**; the customer supplies the key and pays for usage ([ADR-0003](../architecture/adr/0003-ai-provider-openrouter.md)) |
+| Voice | Browser speech APIs on computers; recognition not yet verified in a real browser session |
 | Evidence for the jury | A trial with real students and a pre/post test — _TBD with the teacher_ |
 
 Stack unchanged: PHP 8.2, Laravel 12, Blade + Livewire 4 + Tailwind 4 — see
@@ -87,6 +98,6 @@ Stack unchanged: PHP 8.2, Laravel 12, Blade + Livewire 4 + Tailwind 4 — see
 
 ## Vision statement
 
-For English students at THPT Đông Mai who know words but cannot yet use them to communicate, the
+For THCS students in grades 6–9 who know English words but cannot yet use them to communicate, the
 product is an AI-assisted practice partner, prepared and approved by their teacher, that lets every
 student rehearse real conversations with bilingual support that fades as they improve.

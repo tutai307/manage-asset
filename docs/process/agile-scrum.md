@@ -1,6 +1,6 @@
 # Delivery process — Agile / Scrum
 
-How work moves from a customer conversation to running software on `manage-asset`.
+How work moves from a customer conversation to running software on English Buddy.
 
 ---
 
@@ -52,10 +52,9 @@ Do not start sprint 1 until all of these exist:
 - [ ] `docs/product/vision.md` filled in — the problem, the users, what success means
 - [ ] `docs/product/personas.md` — every role that logs in, and what they do weekly
 - [ ] `docs/product/glossary.md` — the customer's terms, in their words
-- [ ] The customer's **current Excel file or paper process** obtained and examined
-- [ ] Scale known: how many assets, rooms, departments, users
-- [ ] School type known: public (công lập) or private — this determines whether statutory asset
-      regulation applies
+- [ ] Grades, textbook and level known — they decide the content
+- [ ] Scale known: how many teachers, classes and students in the trial
+- [ ] Who pays for any external service (AI, hosting) is agreed
 - [ ] A first backlog with at least one epic broken into `Ready` stories
 - [ ] ADR on the production database engine
 - [ ] ADR on the role/permission model
