@@ -15,7 +15,7 @@ name the file, line, test or command output that proves it:
 2. Every acceptance criterion has an automated test, including the negative and permission cases.
 3. `php artisan test` — run it, report the actual numbers.
 4. `vendor/bin/pint --test` — run it, report the result.
-5. Authorization: Policy exists, is called, and department scoping is applied in the query.
+5. Authorization: Policy exists, is called, and visibility scoping (own class, own grade, published only) is applied in the query.
 6. No N+1 in any list the story touches.
 7. Migration is reversible; a factory exists for any new model.
 8. User-facing strings are localised; the screen survives real Vietnamese text.

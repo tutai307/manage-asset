@@ -18,11 +18,11 @@ Location: `docs/architecture/adr/NNNN-kebab-slug.md`, numbered sequentially from
 - Adding a Composer or npm package that becomes load-bearing
 - Choosing or changing the database engine
 - Authentication / authorization model (roles vs permissions, package vs hand-rolled)
-- Multi-tenancy or multi-school support
+- The AI provider, the model policy, or what is sent to the AI
 - File storage location and access model
 - Queue / scheduling infrastructure
-- Reporting or export strategy
-- Audit-log strategy
+- What content may be stored (copyright — ADR-0005)
+- Hosting for the trial and the competition demo
 - Anything the customer would be annoyed to discover we changed silently
 
 Not required for: naming, folder layout, which utility class to use — that is convention, and
@@ -31,43 +31,35 @@ conventions live in the skills.
 ## Template
 
 ```markdown
-# ADR-0004 — Use spatie/laravel-permission for roles and permissions
+# ADR-NNNN — <decision as a short imperative phrase>
 
-- **Status:** Accepted
-- **Date:** 2026-08-12
-- **Deciders:** delivery lead, laravel-architect, customer (consulted on role names)
-- **Supersedes:** —
+- **Status:** Proposed | Accepted | Superseded by ADR-NNNN
+- **Date:** YYYY-MM-DD
+- **Deciders:** delivery lead, laravel-architect, customer (when they were consulted)
+- **Supersedes:** — | ADR-NNNN
 
 ## Context
-
-The school has 7 distinct roles and permissions are scoped by department. Role names are expected to
-change as the school reorganises, so hardcoding them in code means a deployment for a policy change.
-We need per-department scoping, which no off-the-shelf package handles for us.
+The forces at play: constraints, the requirement that triggered this, what is expensive to reverse.
 
 ## Decision
+What we do, stated so a reviewer can check code against it.
 
-Use `spatie/laravel-permission` for the role/permission registry and assignment. Department scoping
-is implemented in our own query scopes and Policies, not by the package.
+## Evidence
+Optional — measurements or spikes that informed the choice.
 
 ## Options considered
-
-**A. Hand-rolled roles column on users** — simplest, no dependency. Rejected: a single role per user
-does not survive the auditor role, and every permission change becomes a migration.
-
-**B. spatie/laravel-permission (chosen)** — mature, actively maintained, Laravel 12 compatible,
-database-driven so roles change without a deploy. Cost: one more dependency, and its caching
-behaviour is a known source of confusion in tests.
-
-**C. Full policy-only approach with no registry** — most flexible. Rejected: every permission
-question becomes bespoke code and the customer cannot see or change who can do what.
+**A. <option> (chosen)** — benefits, then the cost we accept.
+**B. <option>** — why rejected.
 
 ## Consequences
-
-**Positive:** the customer can be shown a permission matrix; new roles need no code.
-**Negative:** permission cache must be cleared in tests (`app()[PermissionRegistrar::class]->forgetCachedPermissions()`);
-one more upgrade obligation.
-**Follow-up:** AM-T07 — seed the initial role/permission matrix from the customer's answer.
+**Positive:** … **Negative:** … **Follow-up:** backlog IDs, if any.
 ```
+
+Reference examples in this repository:
+[ADR-0003](../../../docs/architecture/adr/0003-ai-provider-openrouter.md) (a decision backed by
+measured evidence) and
+[ADR-0005](../../../docs/architecture/adr/0005-curriculum-alignment-and-copyright.md) (a decision
+driven by a legal constraint).
 
 ## Rules
 

@@ -1,6 +1,6 @@
 ---
 name: discovery-interview
-description: How to run a requirements conversation with the customer as a single point of contact — elicitation technique, a question bank for school asset management, how to record answers, and how to close discovery. Load at the start of the project, before each new epic, and whenever the customer describes a need in vague terms.
+description: How to run a requirements conversation with the customer as a single point of contact — elicitation technique, a question bank for English Buddy (syllabus content, classes, tests, the trial, AI safety), how to record answers, and how to close discovery. Load at the start of the project, before each new epic, and whenever the customer describes a need in vague terms.
 ---
 
 # Discovery interview
@@ -18,37 +18,27 @@ Speak Vietnamese with the customer. Write everything down in English under `docs
    gets three answered badly. Prioritise the ones that unblock the most work.
 2. **Ask about the present, not the wish.** "How do you do this today?" beats "What do you want?".
    Customers describe solutions; you need the problem underneath.
-3. **Ask for artefacts, not descriptions.** The current Excel file, a photo of an asset label, a
-   blank statutory form, last year's inventory report. One real artefact is worth an hour of
+3. **Ask for artefacts, not descriptions.** A page of the teacher's lesson plan, a sample unit test,
+   the pre/post test, a screenshot of what confused a student. One real artefact is worth an hour of
    questions.
 4. **Repeat back before building.** Summarise what you understood in the customer's own words and
    get an explicit yes. Misunderstandings are cheap now and expensive in sprint 4.
-5. **Chase the exception.** Every process has one. "What happens when the asset is broken but the
-   warranty vendor has gone out of business?" is where the real complexity lives.
-6. **Record who decides.** For any rule involving approval or money, find out which named role has
+5. **Chase the exception.** Every process has one. "What happens when a student joins the class in
+   the middle of the trial and missed the pre-test?" is where the real complexity lives.
+6. **Record who decides.** For any rule involving approval or visibility, find out which role has
    authority. That role becomes a Policy.
 7. **Never fill a gap with a guess.** If you must proceed, write `@assumption:` and say it out loud
    to the customer in your reply.
-8. **Timebox.** Discovery that never ends is a failure mode. Get enough to start sprint 1 on a thin
+8. **Timebox.** Discovery that never ends is a failure mode. Get enough to start the next sprint on a thin
    slice, then keep discovering alongside delivery — that is the point of Agile.
 
 ---
 
-## Session 0 — the questions that shape everything
+## Before asking anything
 
-Ask these first. Their answers change the architecture, so they cannot wait.
-
-1. **Scale.** How many assets, roughly? How many rooms, departments, staff who will log in?
-   *(100 assets and 20,000 assets are different systems.)*
-2. **School type.** Public (công lập) or private/international? *(Determines whether statutory
-   asset regulation applies at all.)*
-3. **Today's process.** What are you using now — Excel, paper, another system? Can I see it?
-4. **The pain.** What goes wrong today that made you want this? What is the single worst moment in
-   your current process?
-5. **Success.** In six months, what has to be true for you to say this was worth it?
-6. **The users.** Who logs in, and what does each of them actually do in a normal week?
-7. **The first release.** If we could only ship one thing in six weeks, what would make your life
-   better immediately?
+Read `docs/product/vision.md` (the `_TBD_` rows), the **Open questions** table at the end of
+`docs/product/backlog.md`, and the latest sessions of `docs/product/discovery-log.md`. Ask what is
+still open; never re-ask what is already answered.
 
 ---
 
@@ -56,53 +46,42 @@ Ask these first. Their answers change the architecture, so they cannot wait.
 
 Draw from these as each epic comes up. Do not fire them all at once.
 
-**Asset identity**
-- What does an asset code look like today? Can I see three real examples?
-- Who assigns the code — the system, or a person?
-- Do you have assets bought before this system that need importing?
-- Are identical items tracked individually or as a quantity? Why?
-- Do you print labels? Barcode, QR code, or handwritten?
+**Syllabus and content**
+- Which unit is the class on this week? Can the teacher check our 48 unit titles against the
+  printed books?
+- Is the vocabulary list for this unit right? What is missing, what is too hard?
+- Which starter topics does the teacher keep, drop or add?
+- Is there any content the teacher must write themselves rather than approve from a draft?
 
-**Structure**
-- List of buildings, floors, rooms. Does a room belong to a department?
-- List of departments/tổ bộ môn and their heads.
-- What asset categories do you use? Is the list fixed or does it grow?
+**Classes and accounts**
+- How many classes and students join the trial? Which grades?
+- How are credentials handed to students — printed slips, read out, written in notebooks?
+- What happens when a student forgets a password, changes class, or leaves the school?
 
-**Movement**
-- When an asset moves between rooms, what happens today? Who approves it? Is there paperwork?
-- Can a teacher borrow an asset temporarily? Is there a return date?
-- What happens when a teacher leaves the school and holds assets?
+**Tests and exams**
+- What does a unit test look like today — how many questions, which types, how long?
+- Is a term exam the same format as the school's real exam? Who sets it?
+- Should students see the correct answers after submitting? Immediately, or after the deadline?
 
-**Condition & maintenance**
-- How does someone report a broken item today?
-- Who repairs it — internal staff or an external vendor? Do you track repair cost?
-- Does an item under repair stay assigned to its room?
+**Trial and evidence for the jury**
+- What exactly is the pre/post test — who writes it, when is it run, how is it marked?
+- What result would convince the jury? How many weeks of use are realistic before submission?
+- May we show usage figures and anonymised examples of student work in the entry?
 
-**Inventory (kiểm kê)**
-- How often, and who does it? Is there a committee?
-- Walk me through the last one, step by step.
-- What happens when the count does not match the register — surplus and missing?
-- Would you do it on a phone in the room, or on paper then type it in?
+**Teacher statistics**
+- What does the teacher want to know each week — who has not practised, which sentences are hard,
+  scores per unit?
+- Per student, or per class only? Who else may see it?
 
-**Money**
-- Do you record purchase value? Who needs to see it?
-- Do you need depreciation/hao mòn calculated, or does the accountant do that elsewhere?
-- Does this system need to talk to your accounting software?
-
-**Disposal**
-- What triggers a thanh lý? Who signs off?
-- Does the system need to produce the decision document, or just record it?
-- After disposal, must the record remain visible? For how long?
-
-**Reporting**
-- Which reports do you produce today, for whom, how often? Can I see the actual forms?
-- What is the report someone asks you for that takes you longest to produce?
+**AI and safety**
+- Is the AI's level right for the class? Any reply the teacher found wrong or unsuitable?
+- What should happen when a student types something inappropriate?
 
 **Constraints**
-- Where will this run — school server, cloud, a PC in the office?
-- Internet reliability? Does anything need to work offline?
-- Deadline driven by anything real (a school year, an audit, an inspection)?
-- Who maintains it after we finish?
+- Where will the app run for the trial and for the jury — a school PC, a laptop, a hosted server?
+  Is the internet reliable there?
+- What is the submission date?
+- Who looks after the app after the competition?
 
 ---
 
@@ -117,14 +96,14 @@ Every session updates:
 Append a dated log entry to `docs/product/discovery-log.md`:
 
 ```markdown
-## 2026-08-05 — Session 2: inventory process
+## YYYY-MM-DD — Session N: unit tests   (illustrative example, not a real session)
 
-**Asked about:** kiểm kê workflow, committee, discrepancy handling
+**Asked about:** unit test format, answer visibility, who sets the term exam
 **Learned:**
-- Counts happen twice a year: end of December and end of the school year in May
-- A 3-person committee signs the result; the accountant is always one of them
-**Decided:** mobile counting is in scope for v1 — it is the customer's top pain
-**Open:** what form does the signed result take? Customer will send the template
+- A unit test is 20 questions, 15 minutes, multiple choice and gap fill only
+- Students see correct answers only after the teacher closes the test
+**Decided:** unit tests before term exams — they are what the teacher uses weekly
+**Open:** term exam format — the teacher will send last year's paper
 **Assumptions made:** none
 ```
 

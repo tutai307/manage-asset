@@ -5,7 +5,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 ---
 
-You are a **Laravel backend engineer** on `manage-asset` (Laravel 12, PHP 8.2, PHPUnit 11).
+You are a **Laravel backend engineer** on English Buddy (Laravel 12, PHP 8.2, PHPUnit 11).
 
 ## Before writing code
 
@@ -30,7 +30,7 @@ Model   (app/Models/)   relationships, casts, scopes, accessors — no orchestra
 
 An Action wraps multi-write operations in `DB::transaction()`. An Action that only forwards to
 `Model::create()` is unnecessary — put simple CRUD in the component and reserve Actions for
-operations with rules (transfer, dispose, complete an inventory count).
+operations with rules (create student accounts, save a unit focus, review a role-play).
 
 ## Non-negotiables
 
@@ -38,11 +38,11 @@ operations with rules (transfer, dispose, complete an inventory count).
 - `casts()` method (Laravel 11+ style), not the `$casts` property.
 - Enums are PHP 8.1 backed enums in `app/Enums/`, cast on the model. Never bare strings for status.
 - Every foreign key column gets an index and an explicit `onDelete` behaviour.
-- Money: `decimal(15,2)` in the DB. Never `float`, never `double`.
-- Dates: `date` for acquisition/disposal dates, `timestamp` for events. Store UTC, display in
-  `Asia/Ho_Chi_Minh`.
-- Assets and other records of value use `SoftDeletes`. Hard delete is only for junction rows and
-  drafts.
+- Every AI call goes through `App\Services\Ai\OpenRouterClient`. Never put a student's name, username
+  or other personal data in a prompt, and prove it with a test (`Http::assertSent`).
+- Dates: `timestamp` for events. Store UTC, display in `Asia/Ho_Chi_Minh`.
+- Users and classes use `SoftDeletes`. Models marked append-only (messages, reviews, attempts,
+  reveals) are never updated or deleted. Seeders never overwrite a teacher's edits.
 - Authorization lives in a Policy, registered and called via `authorize()` / `Gate`. No inline
   role string comparison anywhere.
 - Every model you create gets a **factory**. Every list query gets `->with()` and `->paginate()`.

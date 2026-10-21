@@ -23,7 +23,7 @@ Sequence:
 3. Filter every candidate through the **Definition of Ready**. Anything failing is removed from the
    candidate list and named in the plan as removed, with the reason.
 4. Agree a **sprint goal**: one sentence, in the customer's language, describing an outcome.
-   - Good: "Asset managers can register an asset and find it again by code, room or category."
+   - Good: "A student can take the unit test for their own unit and see their score."
    - Bad: "Complete AM-003, AM-004, AM-007."
 5. Estimate anything unestimated. Split anything at 13.
 6. Commit up to the capacity number. Under-commit in sprint 1–2.
@@ -32,28 +32,28 @@ Sequence:
 ### `goal.md`
 
 ```markdown
-# Sprint 3 — 2026-08-10 → 2026-08-16
+# Sprint N — YYYY-MM-DD → YYYY-MM-DD   (illustrative example)
 
 ## Goal
-Asset managers can run a full inventory count on a phone and see the discrepancy list.
+A teacher can give the pre-test to a class and see each student's result.
 
 ## Committed
 | ID | Title | SP | Priority |
 | --- | --- | --- | --- |
-| AM-018 | Start an inventory session | 3 | Must |
-| AM-019 | Scan/enter an asset code during a count | 5 | Must |
-| AM-020 | Discrepancy report for a closed session | 3 | Should |
+| AM-1xx | Teacher opens the pre-test for a class | 3 | Must |
+| AM-1xy | Student takes the pre-test once | 5 | Must |
+| AM-1xz | Class result table for the teacher | 3 | Should |
 | **Total** | | **11** | |
 
 ## Capacity
 Previous velocity: 12, 10, — · Committed: 11 · Buffer: bug fixes from sprint 2
 
 ## Not included, and why
-- AM-021 Bulk transfer — blocked, waiting on the customer's approval-chain answer
-- AM-034 Print the signed form — the customer has not sent the template yet
+- Post-test comparison — needs the pre-test results first
+- Printable result sheet — the teacher has not said what the jury needs
 
 ## Risks
-- Barcode scanning on the school's Android devices is unverified → AM-T04 spike on day 1
+- The test questions come from the teacher; if they arrive late, day 1 is spent on seed data
 ```
 
 ---
@@ -64,13 +64,13 @@ Not a meeting — a written state update, on request or at the start of a workin
 Three questions, answered against the **goal**:
 
 ```markdown
-### Day 3 — Sprint 3
+### Day 3 — Sprint N   (illustrative example)
 
 **On track for the goal?** At risk.
-**Done since last:** AM-018 merged and green.
-**In flight:** AM-019 — the scanner library does not support the school's older browsers.
-**Blocked:** need to know whether counting must work offline. Asked the customer, no answer yet.
-**Action:** proceeding with online-only, marked as an assumption; will need rework if offline is required.
+**Done since last:** AM-1xx merged and green.
+**In flight:** AM-1xy — speech recognition fails on the school's older Chrome version.
+**Blocked:** need to know whether the test may be retaken. Asked the customer, no answer yet.
+**Action:** proceeding with one attempt only, marked as an assumption; small rework if retakes are allowed.
 ```
 
 If the answer to the first question is "No", say so on the day you know — not at the review.
@@ -92,25 +92,24 @@ Structure:
 ### `review.md`
 
 ```markdown
-# Sprint 3 review — 2026-08-16
+# Sprint N review — YYYY-MM-DD   (illustrative example)
 
 ## Goal: achieved / partially achieved / not achieved
-Partially — counting works, the discrepancy report is not started.
+Partially — students can take the test; the class result table is not started.
 
 ## Demonstrated
 | ID | Result | Customer feedback |
 | --- | --- | --- |
-| AM-018 | Accepted | — |
-| AM-019 | Accepted with change request | Wants the room pre-filled from the last scan → AM-041 |
-| AM-020 | Not started | Moved to sprint 4 |
+| AM-1xx | Accepted | — |
+| AM-1xy | Accepted with change request | Wants a timer on the test → new item |
+| AM-1xz | Not started | Moved to the next sprint |
 
 ## New backlog items from this review
-- AM-041 Remember the room between scans (Should, 2 SP)
-- AM-042 Export the count result to Excel for the committee (Must — customer says this is required
-  for the signed record)
+- Show a countdown timer during the test (Should, 2 SP)
+- Export class results for the competition entry (Must — the customer says the jury needs it)
 
 ## Decisions
-- Offline counting is NOT needed — the school has wifi in all buildings. Assumption closed.
+- Students take the test at school only, not at home. Assumption closed.
 ```
 
 ---
@@ -124,17 +123,17 @@ Base it on evidence: `board.md`, `git log`, the review outcome, test results. No
 ### `retro.md`
 
 ```markdown
-# Sprint 3 retrospective
+# Sprint N retrospective   (illustrative example)
 
 ## Data
 Committed 11 SP · Completed 8 SP · 1 story carried over · 2 bugs found after review
 
 ## Went well
-- Splitting AM-019 into scan + confirm made it testable; the negative tests caught two real bugs.
+- Splitting AM-1xy into "take the test" + "see the result" made it testable; the negative tests caught two real bugs.
 
 ## Did not go well
 - Two days lost waiting on an unanswered customer question that was not escalated.
-- AM-020 was pulled into the sprint without a Ready check and turned out to need an unknown format.
+- AM-1xz was pulled into the sprint without a Ready check and turned out to need an unknown format.
 
 ## Actions
 | # | Action | Owner | By |
@@ -156,12 +155,9 @@ retro, because they teach the team that the ceremony is theatre.
 `docs/sprints/README.md`:
 
 ```markdown
-| Sprint | Goal | Committed | Completed | Notes |
-| --- | --- | --- | --- | --- |
-| 1 | Asset CRUD skeleton | 8 | 8 | first sprint, deliberately small |
-| 2 | Search and filtering | 12 | 10 | AM-011 carried over |
-| 3 | Inventory counting | 11 | 8 | blocked 2 days on customer question |
-| **Average** | | | **8.7** | use for sprint 4 planning |
+| Sprint | Dates | Goal | Committed | Built | Accepted | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| N | <start → end> | <one-line goal> | <SP> | <SP built> | <SP accepted at review> | <carry-over, blockers> |
 ```
 
 Velocity is a planning input, not a performance metric. Never compare it across projects, never

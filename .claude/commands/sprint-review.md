@@ -12,7 +12,7 @@ Preparation:
    reported as not done — never demoed as done.
 2. For each completed story, prepare a walkthrough of its **actual Gherkin scenarios**, including
    the negative case and the permission case.
-3. Ensure the demo data is realistic (seeded departments, rooms, Vietnamese asset names). Do not
+3. Ensure the demo data is realistic (seeded classes, Vietnamese student names, real unit content). Do not
    demo on three rows of test data.
 
 Presentation to the customer:
