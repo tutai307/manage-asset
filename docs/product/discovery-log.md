@@ -373,3 +373,17 @@ page from teachers and administrators.
 `@assumption` on each story.
 
 **Backlog impact:** AM-030, AM-031 and AM-032 created.
+
+---
+
+## 2026-11-08 — Session 20: public user guide and landing page
+
+**Learned — from the customer:** they want documentation on how to use the software, available as a
+public address inside the site itself, and a landing page that introduces the software.
+
+**Decided — confirmed by the customer:** the two requests above.
+
+**Assumptions made:** the landing page takes `/` and the dashboard moves to `/dashboard`; the guide
+is at `/guide`; both are bilingual and need no account. The customer was told.
+
+**Backlog impact:** AM-033 and AM-034 created under new epic AM-E09.

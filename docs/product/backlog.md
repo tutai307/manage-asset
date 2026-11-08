@@ -51,6 +51,8 @@ Product: AI-assisted bilingual communicative English trainer for THCS students �
 | 33 | AM-030 | Change my own password | Story | Must | 2 | In Sprint 3 |
 | 34 | AM-031 | Administrator resets a teacher's password | Story | Must | 2 | In Sprint 3 |
 | 35 | AM-032 | Separate sign-in pages for students and for staff | Story | Must | 2 | In Sprint 3 |
+| 36 | AM-033 | Public landing page introducing the product | Story | Must | 3 | In Sprint 3 |
+| 37 | AM-034 | Public user guide inside the site | Story | Must | 3 | In Sprint 3 |
 
 ---
 
@@ -66,6 +68,7 @@ Product: AI-assisted bilingual communicative English trainer for THCS students �
 | AM-E06 | Trial and evidence | AM-013 |
 | AM-E07 | Syllabus-aligned practice (Global Success 6–9) | AM-016, AM-017, AM-022, AM-018, AM-019, AM-020, AM-023, AM-026, AM-027, AM-028, AM-029 |
 | AM-E08 | Tests and exams | AM-021 |
+| AM-E09 | Public presence | AM-033, AM-034 |
 
 ---
 
@@ -682,6 +685,60 @@ Scenario: signing out
 
 **@assumption:** a guest opening a protected page is sent to the student page, which links to the
 staff page. Shown to the customer.
+
+---
+
+### AM-033 — Public landing page introducing the product
+
+**Epic:** AM-E09 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 3 · **Source:** discovery Session 20
+
+As a visitor, such as a jury member, a teacher or a parent, I see what English Buddy is without an
+account, so that I understand it and know where to sign in.
+
+```gherkin
+Scenario: a guest opens the site
+  When a signed-out visitor opens "/"
+  Then they see the introduction, links to both sign-in pages and a link to the user guide
+
+Scenario: a signed-in user opens the site
+  When a signed-in user opens "/"
+  Then they are redirected to their dashboard, now at "/dashboard"
+
+Scenario: both languages
+  When the visitor switches to English
+  Then the page is in English and they stay on it
+```
+
+**Data:** none. The page states only facts true of the product; no invented figures or testimonials.
+
+**@assumption:** the landing page takes "/" and the dashboard moves to "/dashboard". The AM-015
+guest rule still holds for the dashboard. Shown to the customer.
+
+---
+
+### AM-034 — Public user guide inside the site
+
+**Epic:** AM-E09 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 3 · **Source:** discovery Session 20
+
+As a student, teacher or administrator, I read how to use the software at a public address, so that
+I can find my way without being shown.
+
+```gherkin
+Scenario: no account needed
+  When anyone opens "/guide"
+  Then they can read the guide for students, teachers and administrators
+
+Scenario: easy to find
+  Then the guide is linked from the landing page, the sign-in pages and the app menu
+
+Scenario: both languages
+  Then every section exists in Vietnamese and English with the same structure
+```
+
+**Maintenance:** the text lives in `lang/*/guide.php` and quotes on-screen button names, so a change
+to a screen or its label must update the guide too.
+
+**Out of scope:** screenshots in the guide; a guide to installing the software.
 
 ---
 
