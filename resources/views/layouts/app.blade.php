@@ -54,6 +54,9 @@
                         <x-nav-link :href="route('classrooms.index')" icon="users" :active="request()->routeIs('classrooms.*')">{{ __('nav.classrooms') }}</x-nav-link>
                         <x-nav-link :href="route('assignments.index')" icon="check" :active="request()->routeIs('assignments.*')">{{ __('nav.assignments') }}</x-nav-link>
                         <x-nav-link :href="route('exercises.create')" icon="plus" :active="request()->routeIs('exercises.create')">{{ __('nav.new_exercise') }}</x-nav-link>
+                        @can('manageTeachers', App\Models\User::class)
+                            <x-nav-link :href="route('teachers.index')" icon="users" :active="request()->routeIs('teachers.*')">{{ __('nav.teachers') }}</x-nav-link>
+                        @endcan
                     </div>
                 @endcan
             </nav>
@@ -72,6 +75,9 @@
                         <p class="truncate text-sm font-semibold">{{ $user->name }}</p>
                         <p class="truncate text-xs text-ink-subtle">{{ $user->role->label() }}</p>
                     </div>
+                    <a href="{{ route('account.password') }}" class="rounded-lg p-2 text-ink-subtle transition hover:bg-ground hover:text-ink" title="{{ __('nav.change_password') }}" aria-label="{{ __('nav.change_password') }}">
+                        <x-icon name="key" />
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="rounded-lg p-2 text-ink-subtle transition hover:bg-ground hover:text-bad" title="{{ __('auth.sign_out') }}" aria-label="{{ __('auth.sign_out') }}">

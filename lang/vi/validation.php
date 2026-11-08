@@ -5,6 +5,9 @@ return [
         'numeric' => ':Attribute phải nằm trong khoảng :min đến :max.',
         'string' => ':Attribute phải từ :min đến :max ký tự.',
     ],
+    'confirmed' => ':Attribute nhập lại không khớp.',
+    'current_password' => 'Mật khẩu hiện tại không đúng.',
+    'different' => ':Attribute phải khác :other.',
     'integer' => ':Attribute phải là số nguyên.',
     'max' => [
         'numeric' => ':Attribute không được lớn hơn :max.',

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Enums\UserRole;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -35,7 +36,7 @@ class Login extends Component
             ]);
         }
 
-        if (! Auth::attempt(['username' => $this->username, 'password' => $this->password], $this->remember)) {
+        if (! Auth::attempt(['username' => $this->username, 'password' => $this->password, 'role' => $this->acceptedRoles()], $this->remember)) {
             RateLimiter::hit($key, 60);
             $this->reset('password');
 
@@ -50,7 +51,27 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.auth.login')->title(__('auth.sign_in'));
+        return view('livewire.auth.login', ['staff' => $this->forStaff()])
+            ->title(__($this->forStaff() ? 'auth.staff_welcome' : 'auth.welcome'));
+    }
+
+    protected function forStaff(): bool
+    {
+        return false;
+    }
+
+    /**
+     * An account from the other sign-in page gets the same refusal as a wrong password.
+     *
+     * @return list<string>
+     */
+    private function acceptedRoles(): array
+    {
+        return collect(UserRole::cases())
+            ->filter(fn (UserRole $role) => $role->canTeach() === $this->forStaff())
+            ->map(fn (UserRole $role) => $role->value)
+            ->values()
+            ->all();
     }
 
     private function throttleKey(): string

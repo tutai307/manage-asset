@@ -4,13 +4,13 @@
         <span class="text-base font-bold">{{ __('common.app_name') }}</span>
     </div>
 
-    <h1 class="text-2xl font-bold tracking-tight">{{ __('auth.welcome') }}</h1>
-    <p class="mt-1.5 text-sm text-ink-muted">{{ __('auth.tagline') }}</p>
+    <h1 class="text-2xl font-bold tracking-tight">{{ __($staff ? 'auth.staff_welcome' : 'auth.welcome') }}</h1>
+    <p class="mt-1.5 text-sm text-ink-muted">{{ __($staff ? 'auth.staff_tagline' : 'auth.tagline') }}</p>
 
     <form wire:submit="login" class="mt-8 space-y-5">
         <div>
             <label for="username" class="mb-1.5 block text-sm font-medium">{{ __('auth.username') }}</label>
-            <input wire:model="username" id="username" type="text" autocomplete="username" autofocus placeholder="hs.nguyenvanan" class="form-input">
+            <input wire:model="username" id="username" type="text" autocomplete="username" autofocus placeholder="{{ $staff ? 'gv.giaovien' : 'hs.nguyenvanan' }}" class="form-input">
             @error('username') <p class="mt-1.5 text-sm text-bad">{{ $message }}</p> @enderror
         </div>
 
@@ -31,5 +31,10 @@
         </button>
     </form>
 
-    <p class="mt-6 border-t border-line pt-5 text-sm text-ink-muted">{{ __('auth.account_hint') }}</p>
+    <div class="mt-6 space-y-2 border-t border-line pt-5 text-sm text-ink-muted">
+        <p>{{ __($staff ? 'auth.staff_account_hint' : 'auth.account_hint') }}</p>
+        <a href="{{ route($staff ? 'login' : 'login.staff') }}" class="inline-block font-medium text-brand-700 hover:underline">
+            {{ __($staff ? 'auth.go_student_login' : 'auth.go_staff_login') }}
+        </a>
+    </div>
 </div>

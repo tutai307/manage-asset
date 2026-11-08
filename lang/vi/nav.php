@@ -11,6 +11,8 @@ return [
     'assigned' => 'Bài được giao',
     'assignments' => 'Bài đã giao',
     'new_exercise' => 'Tạo bài tập',
+    'teachers' => 'Giáo viên',
+    'change_password' => 'Đổi mật khẩu',
     'open_menu' => 'Mở menu',
     'close_menu' => 'Đóng menu',
 ];
