@@ -41,6 +41,13 @@ Product: AI-assisted bilingual communicative English trainer for THCS students �
 | 23 | AM-009 | AI drafts a new topic pack from a topic name | Story | Should | 5 | Done — inside AM-017 |
 | 24 | AM-010 | Teacher edits and approves a topic before students see it | Story | Should | 3 | Draft |
 | 25 | AM-011 | Spaced-repetition review of sentences | Story | Could | 5 | Draft |
+| 26 | AM-B01 | Speaker buttons silent where the browser voice never starts | Bug | Must | 2 | Done |
+| 27 | AM-024 | Choose a cartoon companion for the role-play | Story | Should | 3 | In Sprint 3 |
+| 28 | AM-025 | Role-play as a hands-free video call with the companion | Story | Should | 8 | In Sprint 3 |
+| 29 | AM-026 | More question types and vocabulary & grammar exercises | Story | Must | 5 | In Sprint 3 |
+| 30 | AM-027 | A teacher writes their own exercise | Story | Must | 3 | In Sprint 3 |
+| 31 | AM-028 | Assign an exercise to a class with a due date | Story | Must | 5 | In Sprint 3 |
+| 32 | AM-029 | Read a photographed or PDF test into an exercise | Story | Must | 8 | In Sprint 3 |
 
 ---
 
@@ -49,12 +56,12 @@ Product: AI-assisted bilingual communicative English trainer for THCS students �
 | ID | Epic | Items |
 | --- | --- | --- |
 | AM-E01 | Accounts and classes | AM-001, AM-002 |
-| AM-E02 | Topics and sentence learning | AM-003, AM-004 |
-| AM-E03 | AI conversation practice | AM-T01, AM-005, AM-T02, AM-006, AM-007, AM-008 |
+| AM-E02 | Topics and sentence learning | AM-003, AM-004, AM-B01 |
+| AM-E03 | AI conversation practice | AM-T01, AM-005, AM-T02, AM-006, AM-007, AM-008, AM-024, AM-025 |
 | AM-E04 | AI content authoring with teacher approval | AM-009, AM-010 |
 | AM-E05 | Review and progress | AM-011, AM-012 |
 | AM-E06 | Trial and evidence | AM-013 |
-| AM-E07 | Syllabus-aligned practice (Global Success 6–9) | AM-016, AM-017, AM-022, AM-018, AM-019, AM-020, AM-023 |
+| AM-E07 | Syllabus-aligned practice (Global Success 6–9) | AM-016, AM-017, AM-022, AM-018, AM-019, AM-020, AM-023, AM-026, AM-027, AM-028, AM-029 |
 | AM-E08 | Tests and exams | AM-021 |
 
 ---
@@ -436,6 +443,176 @@ Scenario: The assistant is unavailable
 
 **Data:** none — the hint is transient and not stored. `@assumption` the teacher does not need to
 know how often hints were used; revisit with AM-012.
+
+---
+
+### AM-B01 — Speaker buttons silent where the browser voice never starts
+
+**Epic:** AM-E02 · **Status:** Done · **Priority:** Must · **SP:** 2 · **Found:** 2026-10-21 by the customer
+
+**Symptom:** pressing any speaker button (sentences, vocabulary, role-play, listening) plays
+nothing in Chrome or Edge on the customer's Windows machine.
+
+**Cause:** Chromium accepts `speechSynthesis.speak()` but never starts or reports an error, even on
+a blank page. Windows' voices and Chrome's normal audio both work, so the app cannot repair the
+browser.
+
+**Fix:** if the browser voice has not started within 1.5 s, the page uses an in-page Piper voice
+instead ([ADR-0006](../architecture/adr/0006-in-page-voice-fallback.md)). The first use downloads
+the voice once, and the toast says so.
+
+**Done when:** a speaker press is audible in Chrome and Edge on the customer's machine; Stop
+silences both voices; `SkillExerciseTest` guards the view wiring.
+
+---
+
+### AM-024 — Choose a cartoon companion for the role-play
+
+**Epic:** AM-E03 · **Status:** In Sprint 3 · **Priority:** Should · **SP:** 3 · **Source:** discovery Session 16
+
+As a student, I choose a cartoon companion (Miu, Robo, Dino or Oli) so that practising English feels
+like talking with a friend.
+
+```gherkin
+Scenario: first call asks for a companion
+  Given I have never chosen a companion
+  When I open a role-play
+  Then I see the four companions and must pick one before the call starts
+
+Scenario: the choice is remembered and can be changed
+  Given I chose Robo earlier
+  When I open a new role-play
+  Then Robo is ready to call, and I can switch to another companion before starting
+
+Scenario: the companion's personality shapes the reply, not the student's data
+  Given I chose Oli
+  When I send a message
+  Then the AI request contains Oli's personality and the scenario role
+  And it contains neither my name nor my username
+```
+
+**Data:** `users.companion` (the student's choice) and `conversations.companion` (who played that
+conversation). Both nullable; values from `App\Enums\Companion`.
+
+---
+
+### AM-025 — Role-play as a hands-free video call with the companion
+
+**Epic:** AM-E03 · **Status:** In Sprint 3 · **Priority:** Should · **SP:** 8 · **Source:** discovery Session 16
+
+As a student, I talk with my companion in an animated video call, so that I practise speaking
+without typing.
+
+```gherkin
+Scenario: the companion speaks and then listens
+  Given I started the call
+  When the companion says its line in its own voice
+  Then its mouth moves with the sound
+  And when it finishes, the microphone opens by itself
+
+Scenario: what I say is sent when I stop speaking
+  Given the companion is listening
+  When I say a sentence and stop
+  Then the sentence is sent, the companion shows it is thinking, and then it answers
+
+Scenario: subtitles can be hidden
+  When I press the subtitle button
+  Then the companion's line is hidden, and pressing again shows it
+
+Scenario: browser without speech recognition
+  Given my browser cannot recognise speech
+  Then the call still works with the typing box, and the companion still speaks its answers
+```
+
+**Not in scope:** a real camera, a voice picker separate from the character, teachers changing
+characters.
+
+---
+
+### AM-026 — More question types and vocabulary & grammar exercises
+
+**Epic:** AM-E07 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 5 · **Source:** discovery Session 17
+
+As a teacher, I use the question types of my own tests: put words in order, rewrite a sentence,
+matching, and pronunciation or stress, in a "Vocabulary & grammar" exercise.
+
+```gherkin
+Scenario: each type is marked automatically
+  Given an exercise with reorder, rewrite, matching and pronunciation questions
+  When a student hands it in
+  Then each answer is marked, and a rewrite accepts every wording the teacher listed
+
+Scenario: a reorder answer must use the given words
+  When I save a reorder question whose answer uses other words
+  Then the editor refuses it
+```
+
+---
+
+### AM-027 — A teacher writes their own exercise
+
+**Epic:** AM-E07 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 3 · **Source:** discovery Session 17
+
+As a teacher, I create an exercise myself, for a unit or just a grade, without asking the AI.
+
+```gherkin
+Scenario: my exercise is mine
+  Given I created an exercise
+  Then other teachers and students cannot open it until I assign it
+  And it does not appear in the unit's open practice
+```
+
+---
+
+### AM-028 — Assign an exercise to a class with a due date
+
+**Epic:** AM-E07 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 5 · **Source:** discovery Session 17
+
+As a teacher, I give an exercise to one or more of my classes with an optional due date, and see
+who has done it and how well.
+
+```gherkin
+Scenario: students see what is assigned
+  Given I assigned an exercise to 7A due Friday 21:00
+  Then students of 7A see it under "Assigned to me" and on their dashboard
+  And students of other classes cannot open it
+
+Scenario: results
+  When I open the assignment
+  Then I see each student's best score, attempts, last attempt and whether they were late
+
+Scenario: an unchecked upload cannot be assigned
+  Given the exercise still has questions marked "Check this"
+  Then assigning is refused until I have saved it
+```
+
+---
+
+### AM-029 — Read a photographed or PDF test into an exercise
+
+**Epic:** AM-E07 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 8 · **Source:** discovery Session 17
+
+As a teacher, I upload photos or a PDF of a test I wrote, and get an exercise to check and assign.
+Design: [ADR-0007](../architecture/adr/0007-teacher-exercises-uploads-and-assignments.md).
+
+```gherkin
+Scenario: the AI transcribes my test
+  Given I upload my own test and confirm it is mine and blank
+  Then a draft exercise holds my questions in my order
+  And questions the AI was unsure of are marked "Check this"
+  And parts it could not convert are listed
+  And the original is shown beside the editor
+
+Scenario: confirmations
+  When I do not confirm that the test is my own and has no student details
+  Then nothing is sent to the AI
+
+Scenario: privacy
+  Then the photo is re-encoded without its metadata
+  And the AI request contains neither my name nor any student's
+```
+
+**Not in scope:** Word files; textbook pages (refused by the customer, ADR-0005).
 
 ---
 

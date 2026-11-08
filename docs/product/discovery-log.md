@@ -280,3 +280,83 @@ the customer gives it.
 **Decided:** `vision.md`, `CLAUDE.md` and the README describe THCS 6–9 only.
 
 **Backlog impact:** none.
+
+---
+
+## 2026-10-21 — Session 15: hosting and budget
+
+**Learned — from the customer:**
+- The app is hosted on **Railway**.
+- The total budget for the entry is **5,000,000 VND**, covering research, development, hosting, the
+  domain and AI usage.
+
+**Decided:** a funding notice for the school was drafted with this split: research 600,000 ·
+development and testing 1,200,000 · Railway 12 months 1,700,000 · `.vn` domain 500,000 ·
+OpenRouter credit 1,000,000. The document itself is customer material and lives in the gitignored
+`docs/customer-data/`.
+
+**Open:** the AI credit covers roughly two months of a two-class trial; who tops it up after that.
+
+**Backlog impact:** none.
+
+---
+
+## 2026-10-21 — Session 16: cartoon companions and a video-call role-play
+
+**Learned — from the customer:** the speaker buttons were silent on their machine (AM-B01, fixed
+with an in-page voice, ADR-0006). They then asked for the AI role-play to feel like a video call
+with a fun cartoon character that each student chooses.
+
+**Decided — confirmed by the customer:**
+- Four original characters: **Miu** (cheerful cat), **Robo** (clumsy funny robot), **Dino** (silly
+  dinosaur), **Oli** (calm, wise owl who speaks like a patient teacher). No licensed characters.
+- Each character has **one voice of its own**; there is no separate voice picker.
+- The character's **personality shapes the AI's tone**, but it still plays the scenario's role at
+  A1–A2. Only the character's name and personality are added to the prompt; no student data.
+- A student **chooses once** and the app remembers it; the choice can be changed before each call.
+- The call is **hands-free**: when the character finishes speaking the microphone opens, and what
+  the student says is sent when they stop. Pause, hint and a typing fallback remain.
+- The character's line is shown as a **subtitle that the student can hide**; the transcript stays
+  available.
+
+**Backlog impact:** AM-024 (choose a companion) and AM-025 (video-call role-play) created.
+
+---
+
+## 2026-10-25 — Session 17: teachers set specific work
+
+**Learned — from the customer:** setting work for students was hard to follow and relied too much
+on AI drafts, whose exercises were often not sensible. Teachers want to set specific work, for
+example by uploading a photo or file of a test and having the system turn it into exercises.
+
+**Decided — confirmed by the customer:**
+- Uploads accept **only tests the teacher or school wrote**, never pages from the Global Success
+  books (ADR-0005 stands). The teacher confirms this, and that the test has no student details.
+- Work is **assigned per class, with an optional due date**, and the teacher sees who has done it.
+  Open unit practice stays available to the whole grade.
+- Uploads are **photos and PDFs**; Word files later if needed.
+- New question types: **put words in order, rewrite a sentence, matching, pronunciation/stress**.
+- Teachers can also **write an exercise themselves**; AI drafting stays as one option.
+
+**Backlog impact:** AM-026 to AM-029 created; design in ADR-0007.
+
+---
+
+## 2026-10-25 — Session 18: one AI button, no drafts, cuter companions
+
+**Learned — from the customer:** the "Draft" badge and the "Create practice" plus "New exercise"
+pair on each skill were confusing; AI-made work should be one button and deletable. Speaking in a
+unit should be AI-made situations practised with the companions. The companions should look
+cuter (chibi, 3D-like). During a call the student's own words should not appear as a subtitle,
+because it breaks the one-to-one feel; only the companion has subtitles.
+
+**Decided — confirmed by the customer:**
+- One "Create with AI" button per skill. What the AI makes belongs to the teacher and reaches
+  students **only when assigned** — assigning is the review step required by rule 8, so there is
+  no draft badge or publish button for exercises.
+- A teacher deletes their own exercises (and old unreviewed drafts), unless a student has already
+  handed one in; then they remove the assignment instead.
+- AI speaking lessons are opened to the whole grade with one "Open to students" button, and are
+  called straight from the unit's Speaking card.
+
+**Backlog impact:** AM-025, AM-027 and AM-028 refined; ADR-0007 amended.

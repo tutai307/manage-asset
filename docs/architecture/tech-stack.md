@@ -22,6 +22,7 @@ decided by an ADR before code depends on it. Installed versions are owned by `co
 | Tests | PHPUnit 11 | Ships with the skeleton. Not Pest — switching would be churn with no delivery value. |
 | Formatter | Laravel Pint | Laravel preset, no custom rules. |
 | Authentication | Hand-rolled username sign-in | Students are minors without email addresses; teachers create their accounts (discovery Session 6). No starter kit. |
+| Hosting | Railway (Hobby plan), app + MySQL, Singapore region where the plan allows | The customer's choice (discovery Session 15). Railway runs behind a proxy, hence `trustProxies` in `bootstrap/app.php`. Servers are outside Vietnam; no student personal data goes to the AI either way. |
 | Roles | `App\Enums\UserRole` + Policies | Three roles (admin, teacher, student) and class-scoped data. Small enough that a permissions package would add more than it removes. |
 
 ### The PHP 8.2 ceiling
@@ -37,7 +38,6 @@ quietly pinning an old version of the package.
 
 | Decision | Why it matters | Blocks |
 | --- | --- | --- |
-| **Hosting for the trial and the jury demo** | The AI needs internet access wherever the app runs; students must reach it from home | The trial (AM-013) |
 | **Pronunciation scoring** (stretch) | Browser recognition gives text, not a score; a scoring service would add cost and send student audio to a third party | Any pronunciation story |
 
 Default position: **decide late, decide with evidence.** Do not install a package before the story
