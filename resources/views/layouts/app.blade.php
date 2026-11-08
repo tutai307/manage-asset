@@ -62,6 +62,10 @@
             </nav>
 
             <div class="border-t border-line p-3">
+                <div class="pb-2">
+                    <x-nav-link :href="route('guide')" icon="question" :active="false">{{ __('nav.guide') }}</x-nav-link>
+                </div>
+
                 <div class="flex items-center justify-between gap-2 px-2 pb-3">
                     <span class="text-xs font-medium text-ink-subtle">{{ __('common.language') }}</span>
                     <x-locale-switcher />

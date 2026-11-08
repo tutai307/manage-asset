@@ -18,10 +18,10 @@
         <div class="grid min-h-screen lg:grid-cols-[1fr_1.1fr]">
             {{-- Left: what the product does, shown with one real exchange from the Shopping topic. --}}
             <section class="hidden flex-col justify-between border-r border-line bg-surface p-12 lg:flex">
-                <div class="flex items-center gap-2.5">
+                <a href="{{ route('landing') }}" class="flex w-fit items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600">
                     <span class="grid size-9 place-items-center rounded-lg bg-brand-600 text-sm font-bold text-white">EB</span>
                     <span class="text-base font-bold">{{ __('common.app_name') }}</span>
-                </div>
+                </a>
 
                 <div class="max-w-sm">
                     <h2 class="text-3xl leading-snug font-bold text-balance">{{ __('auth.hero_title') }}</h2>

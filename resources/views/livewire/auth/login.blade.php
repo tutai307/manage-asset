@@ -1,8 +1,8 @@
 <div class="card p-8">
-    <div class="mb-6 flex items-center gap-2.5 lg:hidden">
+    <a href="{{ route('landing') }}" class="mb-6 flex w-fit items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 lg:hidden">
         <span class="grid size-9 place-items-center rounded-lg bg-brand-600 text-sm font-bold text-white">EB</span>
         <span class="text-base font-bold">{{ __('common.app_name') }}</span>
-    </div>
+    </a>
 
     <h1 class="text-2xl font-bold tracking-tight">{{ __($staff ? 'auth.staff_welcome' : 'auth.welcome') }}</h1>
     <p class="mt-1.5 text-sm text-ink-muted">{{ __($staff ? 'auth.staff_tagline' : 'auth.tagline') }}</p>
@@ -36,5 +36,6 @@
         <a href="{{ route($staff ? 'login' : 'login.staff') }}" class="inline-block font-medium text-brand-700 hover:underline">
             {{ __($staff ? 'auth.go_student_login' : 'auth.go_staff_login') }}
         </a>
+        <a href="{{ route('guide') }}" class="block font-medium text-brand-700 hover:underline">{{ __('nav.guide') }}</a>
     </div>
 </div>

@@ -13,6 +13,8 @@ return [
     'new_exercise' => 'Tạo bài tập',
     'teachers' => 'Giáo viên',
     'change_password' => 'Đổi mật khẩu',
+    'guide' => 'Hướng dẫn sử dụng',
+    'go_to_app' => 'Vào trang học',
     'open_menu' => 'Mở menu',
     'close_menu' => 'Đóng menu',
 ];

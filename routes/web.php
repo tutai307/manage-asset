@@ -22,13 +22,16 @@ Route::post('/locale/{locale}', LocaleController::class)
     ->whereIn('locale', AppLocale::values())
     ->name('locale.switch');
 
+Route::view('/guide', 'public.guide')->name('guide');
+
 Route::middleware('guest')->group(function () {
+    Route::view('/', 'public.landing')->name('landing');
     Route::livewire('/login', Login::class)->name('login');
     Route::livewire('/staff/login', StaffLogin::class)->name('login.staff');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::livewire('/', Dashboard::class)->name('home');
+    Route::livewire('/dashboard', Dashboard::class)->name('home');
     Route::post('/logout', LogoutController::class)->name('logout');
 
     Route::livewire('/account/password', ChangePassword::class)->name('account.password');

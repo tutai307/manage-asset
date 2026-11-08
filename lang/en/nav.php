@@ -13,6 +13,8 @@ return [
     'new_exercise' => 'New exercise',
     'teachers' => 'Teachers',
     'change_password' => 'Change password',
+    'guide' => 'User guide',
+    'go_to_app' => 'Open the app',
     'open_menu' => 'Open menu',
     'close_menu' => 'Close menu',
 ];
