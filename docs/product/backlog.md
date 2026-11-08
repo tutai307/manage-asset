@@ -48,6 +48,9 @@ Product: AI-assisted bilingual communicative English trainer for THCS students �
 | 30 | AM-027 | A teacher writes their own exercise | Story | Must | 3 | In Sprint 3 |
 | 31 | AM-028 | Assign an exercise to a class with a due date | Story | Must | 5 | In Sprint 3 |
 | 32 | AM-029 | Read a photographed or PDF test into an exercise | Story | Must | 8 | In Sprint 3 |
+| 33 | AM-030 | Change my own password | Story | Must | 2 | In Sprint 3 |
+| 34 | AM-031 | Administrator resets a teacher's password | Story | Must | 2 | In Sprint 3 |
+| 35 | AM-032 | Separate sign-in pages for students and for staff | Story | Must | 2 | In Sprint 3 |
 
 ---
 
@@ -55,7 +58,7 @@ Product: AI-assisted bilingual communicative English trainer for THCS students �
 
 | ID | Epic | Items |
 | --- | --- | --- |
-| AM-E01 | Accounts and classes | AM-001, AM-002 |
+| AM-E01 | Accounts and classes | AM-001, AM-002, AM-030, AM-031, AM-032 |
 | AM-E02 | Topics and sentence learning | AM-003, AM-004, AM-B01 |
 | AM-E03 | AI conversation practice | AM-T01, AM-005, AM-T02, AM-006, AM-007, AM-008, AM-024, AM-025 |
 | AM-E04 | AI content authoring with teacher approval | AM-009, AM-010 |
@@ -613,6 +616,72 @@ Scenario: privacy
 ```
 
 **Not in scope:** Word files; textbook pages (refused by the customer, ADR-0005).
+
+---
+
+### AM-030 — Change my own password
+
+**Epic:** AM-E01 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 2 · **Source:** discovery Session 19
+
+As a student, I change the password my teacher gave me to one only I know.
+
+```gherkin
+Scenario: change it
+  Given I am signed in
+  When I give my current password and a new one twice
+  Then the new password works and the old one does not
+
+Scenario: refused
+  When my current password is wrong, the new one is under 8 characters,
+    the two new ones differ, or the new one equals the current one
+  Then I see why in my language and my password stays as it was
+```
+
+**@assumption:** teachers and administrators can use the same page for their own password. Minimum
+length is 8, the length of generated passwords. Shown to the customer.
+
+---
+
+### AM-031 — Administrator resets a teacher's password
+
+**Epic:** AM-E01 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 2 · **Source:** discovery Session 19
+
+As an administrator, I give a teacher a new password when they need one.
+
+```gherkin
+Scenario: reset
+  Given I am an administrator on the teacher list
+  When I reset a teacher's password and confirm
+  Then a new random password is shown to me once and the old one stops working
+
+Scenario: only teachers, only by administrators
+  Then a teacher or student cannot open the list
+  And the list cannot reset a student's or another administrator's password
+```
+
+**@assumption:** the system generates the new password, as it does for students, rather than the
+administrator typing one. Shown to the customer.
+
+---
+
+### AM-032 — Separate sign-in pages for students and for staff
+
+**Epic:** AM-E01 · **Status:** In Sprint 3 · **Priority:** Must · **SP:** 2 · **Source:** discovery Session 19
+
+As a student or a member of staff, I sign in on the page meant for me.
+
+```gherkin
+Scenario: students on /login, staff on /staff/login
+  Then each page accepts only its own roles
+  And an account from the other page gets the same message as a wrong password
+  And each page links to the other
+
+Scenario: signing out
+  Then I return to the sign-in page for my role
+```
+
+**@assumption:** a guest opening a protected page is sent to the student page, which links to the
+staff page. Shown to the customer.
 
 ---
 

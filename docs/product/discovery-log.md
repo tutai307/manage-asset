@@ -360,3 +360,16 @@ because it breaks the one-to-one feel; only the companion has subtitles.
   called straight from the unit's Speaking card.
 
 **Backlog impact:** AM-025, AM-027 and AM-028 refined; ADR-0007 amended.
+
+---
+
+## 2026-11-08 — Session 19: passwords and separate sign-in pages
+
+**Learned — from the customer:** students should be able to change their own password, an
+administrator should be able to change a teacher's, and students should sign in on a different
+page from teachers and administrators.
+
+**Decided — confirmed by the customer:** the three requests above. The details are recorded as
+`@assumption` on each story.
+
+**Backlog impact:** AM-030, AM-031 and AM-032 created.
