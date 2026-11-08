@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Companion;
 use App\Enums\MessageRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,17 @@ class Conversation extends Model
      */
     public const MAX_STUDENT_TURNS = 12;
 
-    protected $fillable = ['user_id', 'roleplay_scenario_id'];
+    protected $fillable = ['user_id', 'roleplay_scenario_id', 'companion'];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'companion' => Companion::class,
+        ];
+    }
 
     public function user(): BelongsTo
     {

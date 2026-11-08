@@ -69,3 +69,122 @@
 @utility label-eyebrow {
     @apply text-xs font-semibold tracking-wide text-ink-subtle uppercase;
 }
+
+/*
+ * Role-play companions (AM-025). The call screen sets data-state on an ancestor and drives
+ * --mouth (0 closed … 1 open) from the voice's loudness; everything else is CSS animation.
+ */
+.cmp * {
+    transform-box: fill-box;
+}
+
+.cmp-head,
+.cmp-bob,
+.cmp-mouth,
+.cmp-eye,
+.cmp-ear-l,
+.cmp-ear-r,
+.cmp-wing-l,
+.cmp-wing-r,
+.cmp-tail {
+    transition: transform 0.25s ease;
+}
+
+.cmp-bob {
+    transform-origin: 50% 100%;
+    animation: cmp-breathe 3.2s ease-in-out infinite;
+}
+
+.cmp-eye {
+    transform-origin: center;
+    animation: cmp-blink 4.6s infinite;
+}
+
+.cmp-mouth {
+    transform-origin: center top;
+    transform: scaleY(calc(0.25 + var(--mouth, 0) * 1.4));
+    transition: transform 0.06s linear;
+}
+
+.cmp-light {
+    animation: cmp-glow 2s ease-in-out infinite;
+}
+
+.cmp-tail {
+    transform-origin: 0% 100%;
+    animation: cmp-wag 1.8s ease-in-out infinite;
+}
+
+[data-state='speaking'] .cmp-bob {
+    animation: cmp-talk 0.5s ease-in-out infinite;
+}
+
+[data-state='speaking'] .cmp-light {
+    animation-duration: 0.4s;
+}
+
+[data-state='listening'] .cmp-head {
+    transform-origin: 50% 90%;
+    transform: rotate(-7deg);
+}
+
+[data-state='listening'] .cmp-ear-l,
+[data-state='listening'] .cmp-wing-l {
+    transform-origin: 100% 100%;
+    animation: cmp-perk 1.2s ease-in-out infinite;
+}
+
+[data-state='thinking'] .cmp-pupil {
+    transform: translate(2px, -4px);
+}
+
+[data-state='thinking'] .cmp-head {
+    transform-origin: 50% 90%;
+    animation: cmp-ponder 1.6s ease-in-out infinite;
+}
+
+@keyframes cmp-breathe {
+    50% { transform: translateY(-3px) scale(1.01); }
+}
+
+@keyframes cmp-talk {
+    50% { transform: translateY(-5px) rotate(1.5deg); }
+}
+
+@keyframes cmp-blink {
+    0%, 92%, 100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.1); }
+}
+
+@keyframes cmp-glow {
+    50% { opacity: 0.45; }
+}
+
+@keyframes cmp-wag {
+    50% { transform: rotate(-10deg); }
+}
+
+@keyframes cmp-perk {
+    50% { transform: rotate(-8deg); }
+}
+
+@keyframes cmp-ponder {
+    0%, 100% { transform: rotate(4deg); }
+    50% { transform: rotate(-4deg); }
+}
+
+@keyframes call-ring {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+@utility call-ring {
+    animation: call-ring 1.6s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cmp *,
+    .call-ring {
+        animation: none !important;
+    }
+}

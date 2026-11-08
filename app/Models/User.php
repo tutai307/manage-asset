@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Companion;
 use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'password',
         'role',
         'locale',
+        'companion',
     ];
 
     /**
@@ -45,6 +47,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
+            'companion' => Companion::class,
         ];
     }
 
@@ -67,6 +70,11 @@ class User extends Authenticatable
     public function conversations(): HasMany
     {
         return $this->hasMany(Conversation::class);
+    }
+
+    public function exerciseAttempts(): HasMany
+    {
+        return $this->hasMany(ExerciseAttempt::class);
     }
 
     /**

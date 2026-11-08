@@ -2,14 +2,19 @@
 
 namespace App\Livewire\Curriculum;
 
+use App\Actions\Curriculum\DeleteTopic;
 use App\Actions\Curriculum\GenerateUnitTopic;
 use App\Actions\Curriculum\SaveUnitFocus;
 use App\Actions\Curriculum\SuggestUnitFocus;
+use App\Actions\Roleplay\StartRoleplay;
+use App\Actions\Skills\DeleteExercise;
 use App\Actions\Skills\GenerateSkillExercise;
 use App\Enums\SkillType;
 use App\Enums\TopicStatus;
 use App\Exceptions\AiUnavailableException;
+use App\Exceptions\StillInUseException;
 use App\Models\CurriculumUnit;
+use App\Models\RoleplayScenario;
 use App\Models\SkillExercise;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Gate;
@@ -128,8 +133,8 @@ class Show extends Component
         $unit = $this->unit();
         $type = SkillType::from($skill);
 
-        if ($type === SkillType::Speaking) {
-            $this->error = __('skills.speaking_is_roleplay');
+        if (! $type->canBeGenerated()) {
+            $this->error = $type === SkillType::Speaking ? __('skills.speaking_is_roleplay') : __('skills.language_is_written');
 
             return;
         }
@@ -141,7 +146,7 @@ class Show extends Component
         }
 
         try {
-            $exercise = $generateSkillExercise->handle($unit, $type);
+            $exercise = $generateSkillExercise->handle($unit, $type, auth()->user());
         } catch (AiUnavailableException) {
             $this->error = __('skills.generate_failed');
 
@@ -169,22 +174,55 @@ class Show extends Component
         $this->dispatch('notify', message: __('curriculum.unpublished'));
     }
 
-    public function publishExercise(int $exerciseId): void
+    /**
+     * Delete an exercise the teacher may delete (their own, or an unreviewed draft) that no
+     * student has handed in.
+     */
+    public function deleteExercise(int $exerciseId, DeleteExercise $deleteExercise): void
     {
         $exercise = $this->unit()->exercises()->findOrFail($exerciseId);
-        Gate::authorize('update', $exercise);
+        Gate::authorize('delete', $exercise);
 
-        $exercise->update(['status' => TopicStatus::Published]);
-        $this->dispatch('notify', message: __('curriculum.published'));
+        try {
+            $deleteExercise->handle($exercise);
+        } catch (StillInUseException $e) {
+            $this->error = __($e->getMessage());
+
+            return;
+        }
+
+        $this->dispatch('notify', message: __('skills.deleted'));
     }
 
-    public function unpublishExercise(int $exerciseId): void
+    public function deleteTopic(int $topicId, DeleteTopic $deleteTopic): void
     {
-        $exercise = $this->unit()->exercises()->findOrFail($exerciseId);
-        Gate::authorize('update', $exercise);
+        $topic = $this->unit()->topics()->findOrFail($topicId);
+        Gate::authorize('delete', $topic);
 
-        $exercise->update(['status' => TopicStatus::Draft]);
-        $this->dispatch('notify', message: __('curriculum.unpublished'));
+        try {
+            $deleteTopic->handle($topic);
+        } catch (StillInUseException $e) {
+            $this->error = __($e->getMessage());
+
+            return;
+        }
+
+        $this->dispatch('notify', message: __('curriculum.deleted'));
+    }
+
+    /**
+     * Speaking practice: call a companion straight from the unit, in one of its situations.
+     */
+    public function startRoleplay(int $scenarioId, StartRoleplay $startRoleplay): void
+    {
+        $scenario = RoleplayScenario::query()
+            ->whereHas('topic', fn ($q) => $q->where('curriculum_unit_id', $this->unitId))
+            ->findOrFail($scenarioId);
+        Gate::authorize('view', $scenario->topic);
+
+        $conversation = $startRoleplay->handle(auth()->user(), $scenario);
+
+        $this->redirectRoute('conversations.show', $conversation, navigate: false);
     }
 
     public function render()
@@ -194,13 +232,16 @@ class Show extends Component
 
         $topics = $unit->topics()
             ->visibleTo($user)
-            ->withCount(['sentencePatterns', 'roleplayScenarios'])
+            ->withCount('sentencePatterns')
+            ->with('roleplayScenarios')
             ->orderBy('sort_order')
             ->get();
 
         $exercises = $unit->exercises()
             ->visibleTo($user)
-            ->withCount('questions')
+            ->withCount(['questions', 'assignments'])
+            ->orderBy('sort_order')
+            ->orderBy('id')
             ->get()
             ->groupBy(fn (SkillExercise $exercise) => $exercise->skill->value);
 

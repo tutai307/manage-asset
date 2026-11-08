@@ -8,6 +8,9 @@ return [
     'topics' => 'Chủ đề giao tiếp',
     'conversations' => 'Hội thoại của em',
     'classrooms' => 'Lớp học',
+    'assigned' => 'Bài được giao',
+    'assignments' => 'Bài đã giao',
+    'new_exercise' => 'Tạo bài tập',
     'open_menu' => 'Mở menu',
     'close_menu' => 'Đóng menu',
 ];

@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Roleplay;
 
+use App\Actions\Roleplay\ChooseCompanion;
 use App\Actions\Roleplay\ReviewRoleplay;
 use App\Actions\Roleplay\SendRoleplayMessage;
 use App\Actions\Roleplay\SuggestReply;
+use App\Enums\Companion;
 use App\Enums\MessageRole;
 use App\Exceptions\AiUnavailableException;
 use App\Exceptions\RoleplayTurnLimitReachedException;
@@ -45,19 +47,39 @@ class ConversationPage extends Component
         );
 
         try {
-            $sendRoleplayMessage->handle($conversation, trim($validated['message']));
+            $reply = $sendRoleplayMessage->handle($conversation, trim($validated['message']));
         } catch (AiUnavailableException) {
             // Keep the typed message so the student can simply press send again.
             $this->error = __('roleplay.ai_unavailable');
+            $this->dispatch('companion-failed');
 
             return;
         } catch (RoleplayTurnLimitReachedException) {
             $this->error = __('roleplay.turn_limit', ['max' => Conversation::MAX_STUDENT_TURNS]);
+            $this->dispatch('companion-failed');
 
             return;
         }
 
         $this->reset('message', 'hint');
+
+        // AM-025: the call screen speaks the reply and then listens again, unless the call is over.
+        $this->dispatch('companion-replied', text: $reply->content, finished: $conversation->hasReachedTurnLimit());
+    }
+
+    /**
+     * AM-024: pick the cartoon character that plays this conversation; remembered for next time.
+     */
+    public function chooseCompanion(string $companion, ChooseCompanion $chooseCompanion): void
+    {
+        $conversation = $this->conversation();
+        Gate::authorize('sendMessage', $conversation);
+
+        $chosen = Companion::tryFrom($companion);
+
+        if ($chosen) {
+            $chooseCompanion->handle($conversation, $chosen);
+        }
     }
 
     /**
@@ -123,6 +145,8 @@ class ConversationPage extends Component
             'maxTurns' => Conversation::MAX_STUDENT_TURNS,
             'canReview' => $turnsUsed >= ReviewRoleplay::MIN_STUDENT_TURNS,
             'review' => $conversation->latestReview(),
+            'companion' => $conversation->companion,
+            'companions' => Companion::cases(),
         ])->title($conversation->scenario->title());
     }
 

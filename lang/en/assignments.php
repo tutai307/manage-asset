@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'student_title' => 'Assigned to me',
+    'teacher_title' => 'Assignments',
+    'empty_student' => 'Nothing has been assigned to you yet.',
+    'empty_teacher' => 'Nothing assigned yet. Open an exercise and press "Assign".',
+
+    'assign_title' => 'Assign to a class',
+    'assign_hint' => 'Students in the chosen classes see this exercise straight away under "Assigned to me".',
+    'classes' => 'Classes',
+    'no_classes' => 'You have no class to assign to yet.',
+    'due' => 'Due date (optional)',
+    'assign' => 'Assign',
+    'pick_class' => 'Choose at least one class.',
+    'assigned' => 'Assigned to :count classes.',
+    'assigned_to' => 'Assigned to',
+    'unassign' => 'Remove',
+    'unassign_confirm' => 'Remove this assignment from :class? Students’ attempts are kept.',
+    'unassigned' => 'Removed the assignment from :class.',
+    'needs_questions' => 'This exercise has no questions yet. Finish it before assigning.',
+    'needs_review' => 'Some questions are marked "Check this". Open the editor, compare with the original and save before assigning.',
+
+    'due_on' => 'Due :date',
+    'no_due' => 'No due date',
+    'overdue' => 'Overdue',
+    'done' => 'Done',
+    'not_done' => 'Not done',
+    'late' => 'Late',
+    'open' => 'Start',
+    'review' => 'Review',
+
+    'results' => 'Results',
+    'completed' => ':done/:total students done',
+    'student' => 'Student',
+    'best_score' => 'Best score',
+    'attempts' => 'Attempts',
+    'last_attempt' => 'Last attempt',
+    'class_average' => 'Class average',
+];

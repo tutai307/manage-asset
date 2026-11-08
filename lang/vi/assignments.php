@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'student_title' => 'Bài được giao',
+    'teacher_title' => 'Bài đã giao',
+    'empty_student' => 'Chưa có bài nào được giao cho em.',
+    'empty_teacher' => 'Chưa giao bài nào. Mở một bài tập rồi bấm "Giao bài".',
+
+    'assign_title' => 'Giao bài cho lớp',
+    'assign_hint' => 'Học sinh của lớp được chọn sẽ thấy bài này ngay trong mục "Bài được giao".',
+    'classes' => 'Lớp',
+    'no_classes' => 'Thầy cô chưa có lớp nào để giao.',
+    'due' => 'Hạn nộp (không bắt buộc)',
+    'assign' => 'Giao bài',
+    'pick_class' => 'Chọn ít nhất một lớp.',
+    'assigned' => 'Đã giao bài cho :count lớp.',
+    'assigned_to' => 'Đang giao cho',
+    'unassign' => 'Huỷ giao',
+    'unassign_confirm' => 'Huỷ giao bài này cho lớp :class? Các lần làm bài của học sinh vẫn được giữ.',
+    'unassigned' => 'Đã huỷ giao bài cho lớp :class.',
+    'needs_questions' => 'Bài chưa có câu hỏi nào, thầy cô soạn xong rồi hãy giao.',
+    'needs_review' => 'Bài còn câu "Cần kiểm tra". Thầy cô mở trang sửa, đối chiếu với đề gốc rồi lưu bài trước khi giao.',
+
+    'due_on' => 'Hạn :date',
+    'no_due' => 'Không có hạn',
+    'overdue' => 'Quá hạn',
+    'done' => 'Đã làm',
+    'not_done' => 'Chưa làm',
+    'late' => 'Nộp muộn',
+    'open' => 'Làm bài',
+    'review' => 'Xem lại',
+
+    'results' => 'Kết quả',
+    'completed' => ':done/:total em đã làm',
+    'student' => 'Học sinh',
+    'best_score' => 'Điểm cao nhất',
+    'attempts' => 'Số lần làm',
+    'last_attempt' => 'Lần làm gần nhất',
+    'class_average' => 'Điểm trung bình',
+];

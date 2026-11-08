@@ -32,6 +32,9 @@ return [
         'key' => env('OPENROUTER_API_KEY'),
         'base_url' => env('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1'),
         'model' => env('OPENROUTER_MODEL', 'anthropic/claude-haiku-4.5'),
+        // Reads photos and PDFs of a teacher's test; falls back to the chat model, which handles images.
+        'vision_model' => env('OPENROUTER_VISION_MODEL'),
+        'vision_timeout' => (int) env('OPENROUTER_VISION_TIMEOUT', 120),
         'timeout' => (int) env('OPENROUTER_TIMEOUT', 20),
     ],
 

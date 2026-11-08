@@ -1,14 +1,20 @@
 <div class="mx-auto max-w-3xl space-y-6">
-    <a href="{{ route('curriculum.show', $exercise->unit) }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted transition hover:text-ink">
-        <x-icon name="arrow-left" class="size-4" /> {{ $exercise->unit->label() }} · {{ $exercise->unit->title() }}
-    </a>
+    @if ($exercise->unit)
+        <a href="{{ route('curriculum.show', $exercise->unit) }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted transition hover:text-ink">
+            <x-icon name="arrow-left" class="size-4" /> {{ $exercise->unit->label() }} · {{ $exercise->unit->title() }}
+        </a>
+    @else
+        <a href="{{ route('assignments.index') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted transition hover:text-ink">
+            <x-icon name="arrow-left" class="size-4" /> {{ auth()->user()->role->canTeach() ? __('nav.assignments') : __('nav.assigned') }}
+        </a>
+    @endif
 
     <header class="border-b border-line pb-5">
         <p class="flex items-center gap-2 text-sm text-ink-muted">
             <x-icon :name="$exercise->skill->icon()" class="size-4 text-brand-600" /> {{ $exercise->skill->label() }}
-            @unless ($exercise->status->isVisibleToStudents())
-                <span class="rounded-full border border-warn/50 bg-warn-soft px-2 py-0.5 text-xs">{{ $exercise->status->label() }}</span>
-            @endunless
+            @if (auth()->user()->role->canTeach() && ($exercise->isTeacherOwned() || ! $exercise->status->isVisibleToStudents()) && ! $exercise->assignments()->exists())
+                <span class="rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium text-ink">{{ __('skills.not_assigned') }}</span>
+            @endif
         </p>
         <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -27,6 +33,10 @@
         <p role="status" class="rounded-lg bg-good-soft px-4 py-3 text-sm text-good">{{ session('status') }}</p>
     @endif
 
+    @can('assign', $exercise)
+        <livewire:assignments.assign-panel :exercise-id="$exercise->id" :key="'assign-'.$exercise->id" />
+    @endcan
+
     @if ($error)
         <p role="alert" class="rounded-lg bg-bad-soft px-4 py-3 text-sm text-bad">{{ $error }}</p>
     @endif
@@ -38,7 +48,7 @@
                 <button type="button" x-on:click="speakEnglish(@js($exercise->passage))" class="btn-primary">
                     <x-icon name="speaker" class="size-4" /> {{ __('skills.play') }}
                 </button>
-                <button type="button" x-on:click="window.speechSynthesis.cancel()" class="btn-secondary">{{ __('skills.stop') }}</button>
+                <button type="button" x-on:click="stopSpeaking()" class="btn-secondary">{{ __('skills.stop') }}</button>
                 <p class="text-sm text-ink-subtle">{{ __('skills.play_hint') }}</p>
             </div>
 
@@ -104,15 +114,15 @@
                             <x-icon :name="($result['correct'] ?? false) ? 'check' : 'x'"
                                 :class="($result['correct'] ?? false) ? 'mt-0.5 size-5 shrink-0 text-good' : 'mt-0.5 size-5 shrink-0 text-bad'" />
                             <div class="min-w-0 flex-1">
-                                <p lang="en" class="text-sm font-medium">{{ $question->prompt }}</p>
+                                <p lang="en" class="text-sm font-medium"><x-marked :text="$question->prompt" :marks="$question->type === App\Enums\QuestionType::Pronunciation" /></p>
                                 <p class="mt-1 text-sm">
                                     <span class="text-ink-subtle">{{ __('skills.your_answer') }}:</span>
-                                    <span lang="en">{{ $result['given'] ?? '—' }}</span>
+                                    <x-marked :text="$result['given'] ?? '—'" :marks="$question->type === App\Enums\QuestionType::Pronunciation" lang="en" />
                                 </p>
                                 @unless ($result['correct'] ?? false)
                                     <p class="text-sm">
                                         <span class="text-ink-subtle">{{ __('skills.correct_answer') }}:</span>
-                                        <span lang="en" class="font-medium text-good">{{ $question->answer }}</span>
+                                        <x-marked :text="$question->answer" :marks="$question->type === App\Enums\QuestionType::Pronunciation" lang="en" class="font-medium text-good" />
                                     </p>
                                     @if ($question->explanation_vi)
                                         <p class="mt-1 text-sm text-ink-muted">{{ $question->explanation_vi }}</p>
@@ -126,7 +136,9 @@
 
             <div class="flex flex-wrap gap-2 border-t border-line px-5 py-4">
                 <button type="button" wire:click="tryAgain" class="btn-secondary">{{ __('skills.try_again') }}</button>
-                <a href="{{ route('curriculum.show', $exercise->unit) }}" class="btn-quiet">{{ __('skills.back_to_unit') }}</a>
+                @if ($exercise->unit)
+                    <a href="{{ route('curriculum.show', $exercise->unit) }}" class="btn-quiet">{{ __('skills.back_to_unit') }}</a>
+                @endif
             </div>
         </section>
     @elseif ($canAttempt)
@@ -143,16 +155,46 @@
                     @foreach ($exercise->questions as $index => $question)
                         <li wire:key="question-{{ $question->id }}" class="px-5 py-4">
                             <p lang="en" class="font-medium">
-                                <span class="text-ink-subtle tabular-nums">{{ $index + 1 }}.</span> {{ $question->prompt }}
+                                <span class="text-ink-subtle tabular-nums">{{ $index + 1 }}.</span>
+                                @if ($question->type === App\Enums\QuestionType::Reorder)
+                                    <span lang="vi">{{ __('skills.reorder_tap') }}</span>
+                                @else
+                                    <x-marked :text="$question->prompt" :marks="$question->type === App\Enums\QuestionType::Pronunciation" />
+                                @endif
                             </p>
 
-                            @if ($question->type->hasOptions())
+                            @if ($question->type === App\Enums\QuestionType::Matching)
+                                <select wire:model="answers.{{ $question->id }}" lang="en" aria-label="{{ $question->prompt }}" class="form-input mt-3 sm:max-w-sm">
+                                    <option value="">{{ __('skills.choose') }}</option>
+                                    @foreach ($question->options as $option)
+                                        <option value="{{ $option }}">{{ $option }}</option>
+                                    @endforeach
+                                </select>
+                            @elseif ($question->type === App\Enums\QuestionType::Reorder)
+                                {{-- Tap the words in order; the sentence built so far is the answer --}}
+                                <div x-data="{ words: @js($question->scrambledWords()), picked: [] }"
+                                    x-init="$watch('picked', (p) => $wire.set('answers.{{ $question->id }}', p.map((i) => words[i]).join(' '), false))">
+                                    <p lang="en" class="mt-3 flex min-h-11 flex-wrap items-center gap-1.5 rounded-lg border border-dashed border-line-strong px-3 py-2">
+                                        <template x-for="(i, position) in picked" :key="position">
+                                            <button type="button" x-on:click="picked.splice(position, 1)" x-text="words[i]"
+                                                class="rounded-md bg-brand-600 px-2.5 py-1 text-sm font-medium text-white"></button>
+                                        </template>
+                                    </p>
+                                    <div class="mt-2 flex flex-wrap items-center gap-1.5" lang="en">
+                                        <template x-for="(word, i) in words" :key="i">
+                                            <button type="button" x-show="! picked.includes(i)" x-on:click="picked.push(i)" x-text="word"
+                                                class="rounded-md border border-line bg-surface px-2.5 py-1 text-sm font-medium transition hover:border-brand-600"></button>
+                                        </template>
+                                        <button type="button" x-show="picked.length" x-on:click="picked = []" class="btn-quiet text-xs">{{ __('skills.reorder_clear') }}</button>
+                                    </div>
+                                </div>
+                            @elseif ($question->type->hasOptions())
                                 <div class="mt-3 grid gap-2" role="group">
                                     @foreach ($question->options as $option)
                                         <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-line px-3.5 py-2.5 text-sm transition hover:bg-ground has-checked:border-brand-600 has-checked:bg-brand-50">
                                             <input type="radio" wire:model="answers.{{ $question->id }}" value="{{ $option }}"
                                                 name="question-{{ $question->id }}" class="size-4 text-brand-600 focus:ring-brand-100">
-                                            <span lang="en">{{ $option }}</span>
+                                            <x-marked :text="$option" :marks="$question->type === App\Enums\QuestionType::Pronunciation" lang="en" />
                                         </label>
                                     @endforeach
                                 </div>

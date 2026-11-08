@@ -20,6 +20,7 @@ class StartRoleplay
             $conversation = Conversation::create([
                 'user_id' => $student->id,
                 'roleplay_scenario_id' => $scenario->id,
+                'companion' => $student->companion,
             ]);
 
             $conversation->messages()->create([

@@ -14,7 +14,8 @@
 
         @livewireStyles
     </head>
-    <body class="min-h-screen bg-ground font-sans text-ink antialiased" x-data="{ sidebarOpen: false }" x-on:keydown.escape.window="sidebarOpen = false">
+    <body class="min-h-screen bg-ground font-sans text-ink antialiased" x-data="{ sidebarOpen: false }"
+        data-speech-loading="{{ __('common.speech_loading') }}" data-speech-failed="{{ __('common.speech_failed') }}" x-on:keydown.escape.window="sidebarOpen = false">
         @php($user = auth()->user())
 
         <div x-show="sidebarOpen" x-cloak x-transition.opacity x-on:click="sidebarOpen = false"
@@ -42,12 +43,17 @@
                     <x-nav-link :href="route('curriculum.index')" icon="academic" :active="request()->routeIs('curriculum.*')">{{ __('nav.curriculum') }}</x-nav-link>
                     <x-nav-link :href="route('topics.index')" icon="book" :active="request()->routeIs('topics.*')">{{ __('nav.topics') }}</x-nav-link>
                     <x-nav-link :href="route('conversations.index')" icon="chat" :active="request()->routeIs('conversations.*')">{{ __('nav.conversations') }}</x-nav-link>
+                    @unless ($user->role->canTeach())
+                        <x-nav-link :href="route('assignments.index')" icon="check" :active="request()->routeIs('assignments.*')">{{ __('nav.assigned') }}</x-nav-link>
+                    @endunless
                 </div>
 
                 @can('viewAny', App\Models\Classroom::class)
                     <div class="space-y-0.5">
                         <p class="label-eyebrow px-3 pb-2">{{ __('nav.section_teach') }}</p>
                         <x-nav-link :href="route('classrooms.index')" icon="users" :active="request()->routeIs('classrooms.*')">{{ __('nav.classrooms') }}</x-nav-link>
+                        <x-nav-link :href="route('assignments.index')" icon="check" :active="request()->routeIs('assignments.*')">{{ __('nav.assignments') }}</x-nav-link>
+                        <x-nav-link :href="route('exercises.create')" icon="plus" :active="request()->routeIs('exercises.create')">{{ __('nav.new_exercise') }}</x-nav-link>
                     </div>
                 @endcan
             </nav>

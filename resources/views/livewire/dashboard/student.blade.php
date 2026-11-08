@@ -14,6 +14,27 @@
         @endif
     </header>
 
+    @if ($pendingAssignments->isNotEmpty())
+        <section aria-labelledby="assigned-title">
+            <div class="mb-3 flex items-baseline justify-between gap-4">
+                <h2 id="assigned-title" class="text-lg font-semibold">{{ __('assignments.student_title') }}</h2>
+                <a href="{{ route('assignments.index') }}" class="btn-quiet">{{ __('dashboard.see_all') }}</a>
+            </div>
+            <ul class="card divide-y divide-line">
+                @foreach ($pendingAssignments as $assignment)
+                    <li wire:key="pending-{{ $assignment->id }}" class="flex flex-wrap items-center gap-3 px-5 py-3.5">
+                        <x-icon :name="$assignment->exercise->skill->icon()" class="text-brand-600" />
+                        <span class="min-w-0 flex-1 font-medium">{{ $assignment->exercise->title() }}</span>
+                        <span @class(['text-sm', 'font-medium text-bad' => $assignment->isOverdue(), 'text-ink-subtle' => ! $assignment->isOverdue()])>
+                            {{ $assignment->due_at ? __('assignments.due_on', ['date' => $assignment->due_at->setTimezone(config('app.display_timezone'))->format('d/m H:i')]) : __('assignments.no_due') }}
+                        </span>
+                        <a href="{{ route('exercises.show', $assignment->exercise) }}" class="btn-primary">{{ __('assignments.open') }}</a>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
+
     <section aria-label="{{ __('dashboard.your_progress') }}">
         <x-stat-row :stats="[
             ['label' => __('dashboard.stat_topics'), 'value' => $stats['topics'], 'suffix' => '/ ' . $totalTopics],

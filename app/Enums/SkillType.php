@@ -8,6 +8,8 @@ enum SkillType: string
     case Speaking = 'speaking';
     case Reading = 'reading';
     case Writing = 'writing';
+    // Vocabulary, grammar and pronunciation questions — most of a teacher's own test.
+    case Language = 'language';
 
     public function label(): string
     {
@@ -21,7 +23,17 @@ enum SkillType: string
             self::Speaking => 'microphone',
             self::Reading => 'book',
             self::Writing => 'pencil',
+            self::Language => 'academic',
         };
+    }
+
+    /**
+     * Skills the unit page can draft with AI. Speaking is the role-play; language practice is
+     * written or uploaded by the teacher.
+     */
+    public function canBeGenerated(): bool
+    {
+        return in_array($this, [self::Listening, self::Reading, self::Writing], true);
     }
 
     /**

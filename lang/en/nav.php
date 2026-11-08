@@ -8,6 +8,9 @@ return [
     'topics' => 'Communication topics',
     'conversations' => 'My conversations',
     'classrooms' => 'Classes',
+    'assigned' => 'Assigned to me',
+    'assignments' => 'Assignments',
+    'new_exercise' => 'New exercise',
     'open_menu' => 'Open menu',
     'close_menu' => 'Close menu',
 ];

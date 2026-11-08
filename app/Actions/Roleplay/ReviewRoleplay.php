@@ -37,12 +37,20 @@ class ReviewRoleplay
             throw new AiUnavailableException('Not enough student sentences to review.');
         }
 
-        $answer = $this->ai->chat([
+        $messages = [
             ['role' => 'system', 'content' => $this->systemPrompt()],
             ['role' => 'user', 'content' => $this->sentenceList($sentences)],
-        ], maxTokens: 900, temperature: 0.2);
+        ];
 
-        $payload = $this->decode($answer);
+        // The model occasionally breaks its own JSON (e.g. two corrections joined by "or"); one
+        // fresh attempt almost always comes back well-formed.
+        $answer = $this->ai->chat($messages, maxTokens: 900, temperature: 0.2);
+
+        try {
+            $payload = $this->decode($answer);
+        } catch (AiUnavailableException) {
+            $payload = $this->decode($this->ai->chat($messages, maxTokens: 900, temperature: 0.2));
+        }
 
         return DB::transaction(function () use ($conversation, $sentences, $payload) {
             $items = collect($payload['sentences'])->take($sentences->count());
@@ -92,6 +100,8 @@ class ReviewRoleplay
         Rules:
         - One array entry per numbered sentence, in the same order.
         - When is_good is false, better_en is a corrected version in simple English, and note_vi / note_en explain the fix in one short sentence each.
+        - better_en is one single string with one correction. Never offer alternatives such as "A" or "B".
+        - Short spoken answers such as "Yes." or "The mall." are good when they answer the question naturally.
         - When is_good is true, better_en, note_vi and note_en are null.
         - Never mention the student's name or any personal detail.
         PROMPT;

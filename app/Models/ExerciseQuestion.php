@@ -14,15 +14,29 @@ class ExerciseQuestion extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['skill_exercise_id', 'type', 'prompt', 'options', 'answer', 'explanation_vi', 'sort_order'];
+    protected $fillable = [
+        'skill_exercise_id', 'type', 'prompt', 'options', 'answer', 'accepted_answers', 'explanation_vi', 'needs_check', 'sort_order',
+    ];
 
     protected function casts(): array
     {
         return [
             'type' => QuestionType::class,
             'options' => 'array',
+            'accepted_answers' => 'array',
+            'needs_check' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    /**
+     * The words of a reorder question, as the student sees them: "school / go / I / to".
+     *
+     * @return list<string>
+     */
+    public function scrambledWords(): array
+    {
+        return array_values(array_filter(array_map('trim', explode('/', $this->prompt)), 'strlen'));
     }
 
     public function exercise(): BelongsTo
@@ -36,7 +50,15 @@ class ExerciseQuestion extends Model
      */
     public function isCorrect(?string $given): bool
     {
-        return self::normalise($given) === self::normalise($this->answer);
+        $given = self::normalise($given);
+
+        if ($given === '') {
+            return false;
+        }
+
+        $accepted = [$this->answer, ...($this->type->acceptsAlternatives() ? ($this->accepted_answers ?? []) : [])];
+
+        return collect($accepted)->contains(fn ($answer) => self::normalise($answer) === $given);
     }
 
     public static function normalise(?string $value): string

@@ -120,7 +120,7 @@ class GenerateUnitTopicTest extends TestCase
         Livewire::actingAs($teacher)
             ->test(Show::class, ['unit' => $unit])
             ->call('generate')
-            ->assertSee('Chưa soạn được nội dung');
+            ->assertSee(__('curriculum.generate_failed'));
 
         $this->assertDatabaseCount('topics', 0);
         $this->assertDatabaseCount('sentence_patterns', 0);
@@ -135,7 +135,7 @@ class GenerateUnitTopicTest extends TestCase
         Livewire::actingAs($teacher)
             ->test(Show::class, ['unit' => $unit])
             ->call('generate')
-            ->assertSee('Chưa soạn được nội dung');
+            ->assertSee(__('curriculum.generate_failed'));
 
         $this->assertDatabaseCount('topics', 0);
     }

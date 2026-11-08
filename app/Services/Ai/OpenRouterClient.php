@@ -20,9 +20,12 @@ class OpenRouterClient
     }
 
     /**
-     * @param  list<array{role: string, content: string}>  $messages
+     * A message's content is a string, or a list of parts (text, image_url, file) for a vision model.
+     * The timeout is in seconds; reading an uploaded test takes far longer than a chat reply.
+     *
+     * @param  list<array{role: string, content: string|list<array<string, mixed>>}>  $messages
      */
-    public function chat(array $messages, ?string $model = null, int $maxTokens = 300, float $temperature = 0.7): string
+    public function chat(array $messages, ?string $model = null, int $maxTokens = 300, float $temperature = 0.7, ?int $timeout = null): string
     {
         if (! $this->isConfigured()) {
             throw new AiUnavailableException('OpenRouter API key is not configured.');
@@ -35,7 +38,7 @@ class OpenRouterClient
                 ->baseUrl(config('services.openrouter.base_url'))
                 ->withToken(config('services.openrouter.key'))
                 ->withHeaders(['X-Title' => config('app.name')])
-                ->timeout((int) config('services.openrouter.timeout'))
+                ->timeout($timeout ?? (int) config('services.openrouter.timeout'))
                 ->acceptJson()
                 ->post('/chat/completions', [
                     'model' => $model,

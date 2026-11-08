@@ -2,12 +2,14 @@
 
 namespace App\Actions\Skills;
 
+use App\Enums\ExerciseSource;
 use App\Enums\QuestionType;
 use App\Enums\SkillType;
 use App\Enums\TopicStatus;
 use App\Exceptions\AiUnavailableException;
 use App\Models\CurriculumUnit;
 use App\Models\SkillExercise;
+use App\Models\User;
 use App\Services\Ai\OpenRouterClient;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,9 +25,12 @@ class GenerateSkillExercise
     public function __construct(private readonly OpenRouterClient $ai) {}
 
     /**
+     * Draft an exercise for the unit. Pressed by a teacher, it is theirs and reaches students only
+     * when they assign it; built for the shipped seed (no owner), it is the unit's open practice.
+     *
      * @throws AiUnavailableException
      */
-    public function handle(CurriculumUnit $unit, SkillType $skill): SkillExercise
+    public function handle(CurriculumUnit $unit, SkillType $skill, ?User $owner = null): SkillExercise
     {
         $unit->loadMissing('vocabulary');
 
@@ -36,8 +41,10 @@ class GenerateSkillExercise
 
         $payload = $this->decode($answer, $skill);
 
-        return DB::transaction(function () use ($unit, $skill, $payload) {
+        return DB::transaction(function () use ($unit, $skill, $payload, $owner) {
             $exercise = $unit->exercises()->create([
+                'owner_id' => $owner?->id,
+                'source' => ExerciseSource::Generated,
                 'skill' => $skill,
                 'title_en' => $payload['title_en'],
                 'title_vi' => $payload['title_vi'],

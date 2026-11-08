@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Actions\Progress\CalculateLearningStreak;
 use App\Enums\MessageRole;
+use App\Models\Assignment;
 use App\Models\Classroom;
 use App\Models\Conversation;
 use App\Models\ConversationMessage;
@@ -44,6 +45,15 @@ class Dashboard extends Component
                 'reveals' => PatternReveal::query()->where('user_id', $student->id)->count(),
             ],
             'totalTopics' => Topic::query()->published()->count(),
+            // AM-028: what the teacher is waiting for, nearest due date first.
+            'pendingAssignments' => Assignment::query()
+                ->whereIn('classroom_id', $student->classrooms()->select('classrooms.id'))
+                ->whereDoesntHave('exercise.attempts', fn ($q) => $q->where('user_id', $student->id))
+                ->with('exercise:id,title_en,title_vi,skill')
+                ->orderByRaw('case when due_at is null then 1 else 0 end')
+                ->orderBy('due_at')
+                ->limit(3)
+                ->get(),
             'recentConversations' => $student->conversations()
                 ->with('scenario.topic')
                 ->withCount(['messages as student_turns' => $studentTurns])

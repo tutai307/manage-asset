@@ -34,7 +34,12 @@ class RoleplayReviewTest extends TestCase
 
     private function fakeReview(): void
     {
-        $payload = json_encode([
+        Http::fake(['openrouter.ai/*' => Http::response(['choices' => [['message' => ['content' => $this->validReviewJson()]]]])]);
+    }
+
+    private function validReviewJson(): string
+    {
+        return json_encode([
             'sentences' => [
                 ['original' => 'How much this T-shirt 1?', 'is_good' => false, 'better_en' => 'How much is this T-shirt?', 'note_vi' => 'Câu hỏi cần động từ "is".', 'note_en' => 'The question needs "is".'],
                 ['original' => 'How much this T-shirt 2?', 'is_good' => true, 'better_en' => null, 'note_vi' => null, 'note_en' => null],
@@ -42,8 +47,6 @@ class RoleplayReviewTest extends TestCase
             'summary_vi' => 'Em nói khá tốt, chú ý thêm động từ "to be".',
             'summary_en' => 'Good work, watch the verb "to be".',
         ]);
-
-        Http::fake(['openrouter.ai/*' => Http::response(['choices' => [['message' => ['content' => $payload]]]])]);
     }
 
     public function test_student_receives_marked_sentences_and_a_summary(): void
@@ -113,6 +116,39 @@ class RoleplayReviewTest extends TestCase
             ->assertSee('Chưa lấy được nhận xét');
 
         $this->assertDatabaseCount('roleplay_reviews', 0);
+    }
+
+    public function test_a_malformed_answer_is_asked_for_once_more_and_then_stored(): void
+    {
+        $student = User::factory()->student()->create();
+        $conversation = $this->conversationWithSentences($student);
+
+        // Two corrections joined by "or" is not valid JSON — seen from the real model.
+        $broken = '{"sentences": [{"original": "I am going.", "is_good": false, "better_en": "I\'m going to the mall." or "I\'m going out.", "note_vi": null, "note_en": null}]}';
+        Http::fakeSequence('openrouter.ai/*')
+            ->push(['choices' => [['message' => ['content' => $broken]]]])
+            ->push(['choices' => [['message' => ['content' => $this->validReviewJson()]]]]);
+
+        Livewire::actingAs($student)
+            ->test(ConversationPage::class, ['conversation' => $conversation])
+            ->call('review')
+            ->assertSee('How much is this T-shirt?');
+
+        Http::assertSentCount(2);
+        $this->assertDatabaseCount('roleplay_reviews', 1);
+    }
+
+    public function test_the_review_prompt_asks_for_a_single_correction(): void
+    {
+        $student = User::factory()->student()->create();
+        $conversation = $this->conversationWithSentences($student);
+        $this->fakeReview();
+
+        Livewire::actingAs($student)
+            ->test(ConversationPage::class, ['conversation' => $conversation])
+            ->call('review');
+
+        Http::assertSent(fn (Request $request) => str_contains(json_encode($request->data()), 'Never offer alternatives'));
     }
 
     public function test_ai_failure_shows_a_message_and_stores_nothing(): void

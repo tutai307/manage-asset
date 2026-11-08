@@ -58,14 +58,21 @@ class SendRoleplayMessage
         $scenario = $conversation->scenario;
         $patterns = $scenario->topic->sentencePatterns->pluck('english')->implode("\n- ");
 
+        // AM-024: the cartoon character colours the tone; the scenario role still decides what is said.
+        $character = $conversation->companion
+            ? "\nYou are {$conversation->companion->personality()} Keep this personality in every reply, while playing the role below.\n"
+            : '';
+
         return <<<PROMPT
         You are a friendly English conversation partner for Vietnamese lower-secondary students (age 11-15, CEFR A1-A2).
-
+        {$character}
         Role-play situation: {$scenario->title_en}.
         You play: {$scenario->ai_role}. The student plays: {$scenario->student_role}.
 
         Rules:
         - Stay in your role for the whole conversation.
+        - Your personality changes how you speak, never the level: keep it simple and on the situation.
+        - Your reply is read aloud: plain sentences only, no emojis, no markdown.
         - Reply in simple English only, 1-2 short sentences, then usually ask a question to keep the conversation going.
         - Use vocabulary a 12-year-old learner knows. Prefer these useful sentences when natural:
         - {$patterns}

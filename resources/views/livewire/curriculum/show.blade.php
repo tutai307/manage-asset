@@ -101,113 +101,168 @@
         @endif
     </section>
 
-    {{-- Four skills --}}
-    <section>
-        <h2 class="mb-3 text-lg font-semibold">{{ __('skills.title') }}</h2>
+    @php
+        $skillTheme = [
+            'speaking' => 'bg-pink-100 text-pink-600',
+            'listening' => 'bg-sky-100 text-sky-600',
+            'reading' => 'bg-emerald-100 text-emerald-600',
+            'writing' => 'bg-amber-100 text-amber-600',
+            'language' => 'bg-violet-100 text-violet-600',
+        ];
+    @endphp
 
-        <div class="grid gap-4 sm:grid-cols-2">
-            @foreach ($skills as $skill)
-                @php($list = $exercises[$skill->value] ?? collect())
-                <article wire:key="skill-{{ $skill->value }}" class="card flex flex-col p-5">
-                    <div class="flex items-center gap-2.5">
-                        <x-icon :name="$skill->icon()" class="text-brand-600" />
-                        <h3 class="font-semibold">{{ $skill->label() }}</h3>
-                        <span class="ml-auto text-sm text-ink-subtle tabular-nums">{{ $list->count() }}</span>
-                    </div>
-
-                    @if ($skill === App\Enums\SkillType::Speaking)
-                        <p class="mt-3 flex-1 text-sm text-ink-muted">{{ __('skills.speaking_is_roleplay') }}</p>
-                        @if ($topics->isNotEmpty())
-                            <a href="{{ route('topics.show', $topics->first()) }}" class="btn-secondary mt-4 self-start">{{ __('roleplay.start') }}</a>
-                        @endif
-                    @else
-                        @if ($list->isEmpty())
-                            <p class="mt-3 flex-1 text-sm text-ink-muted">{{ $canManage ? __('skills.empty_teacher') : __('skills.empty_student') }}</p>
-                        @else
-                            <ul class="mt-3 flex-1 space-y-2">
-                                @foreach ($list as $exercise)
-                                    <li wire:key="exercise-{{ $exercise->id }}" class="flex flex-wrap items-center gap-2">
-                                        <a href="{{ route('exercises.show', $exercise) }}" class="min-w-0 flex-1 text-sm font-medium hover:underline">
-                                            {{ $exercise->title() }}
-                                            @if ($exercise->questions_count > 0)
-                                                <span class="text-ink-subtle">· {{ trans_choice('skills.question_count', $exercise->questions_count, ['count' => $exercise->questions_count]) }}</span>
-                                            @endif
-                                        </a>
-
-                                        @unless ($exercise->status->isVisibleToStudents())
-                                            <span class="rounded-full border border-warn/50 bg-warn-soft px-2 py-0.5 text-xs">{{ $exercise->status->label() }}</span>
-                                        @endunless
-
-                                        @if ($canManage)
-                                            <a href="{{ route('exercises.edit', $exercise) }}" class="btn-quiet text-xs">{{ __('curriculum.focus_edit') }}</a>
-                                            @if ($exercise->status->isVisibleToStudents())
-                                                <button type="button" wire:click="unpublishExercise({{ $exercise->id }})" class="btn-quiet text-xs">{{ __('curriculum.unpublish') }}</button>
-                                            @else
-                                                <button type="button" wire:click="publishExercise({{ $exercise->id }})" class="btn-quiet text-xs">{{ __('curriculum.publish') }}</button>
-                                            @endif
-                                        @endif
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
-
-                        @if ($canManage)
-                            <button type="button" wire:click="generateExercise('{{ $skill->value }}')" wire:loading.attr="disabled" wire:target="generateExercise"
-                                class="btn-secondary mt-4 self-start">
-                                <span wire:loading.remove wire:target="generateExercise">{{ __('skills.generate') }}</span>
-                                <span wire:loading wire:target="generateExercise">{{ __('curriculum.generating') }}</span>
-                            </button>
-                        @endif
-                    @endif
-                </article>
-            @endforeach
-        </div>
-    </section>
-
-    {{-- Conversation packs --}}
-    <section>
-        <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <h2 class="text-lg font-semibold">{{ __('curriculum.lessons') }}</h2>
-
-            @if ($canManage)
-                <button type="button" wire:click="generate" wire:loading.attr="disabled" wire:target="generate" class="btn-secondary">
-                    <span wire:loading.remove wire:target="generate">{{ __('curriculum.generate') }}</span>
-                    <span wire:loading wire:target="generate">{{ __('curriculum.generating') }}</span>
-                </button>
-            @endif
+    {{-- Speaking: AI-made situations for this unit, practised by calling a companion --}}
+    <section class="card overflow-hidden" aria-labelledby="speaking-title">
+        <div class="flex flex-wrap items-center gap-4 bg-gradient-to-r from-pink-50 via-violet-50 to-sky-50 px-5 py-4">
+            <span class="grid size-11 place-items-center rounded-xl {{ $skillTheme['speaking'] }}"><x-icon name="microphone" /></span>
+            <div class="min-w-0 flex-1">
+                <h2 id="speaking-title" class="font-semibold">{{ App\Enums\SkillType::Speaking->label() }}</h2>
+                <p class="text-sm text-ink-muted">{{ __('curriculum.speaking_hint') }}</p>
+            </div>
+            <div class="flex -space-x-3" aria-hidden="true">
+                @foreach (App\Enums\Companion::cases() as $companion)
+                    <span class="grid size-12 place-items-center rounded-full bg-surface shadow-sm ring-2 ring-surface">
+                        <x-companion :companion="$companion" class="size-11" />
+                    </span>
+                @endforeach
+            </div>
         </div>
 
         @if ($topics->isEmpty())
-            <p class="card p-8 text-center text-sm text-ink-muted">
-                {{ $canManage ? __('curriculum.empty_teacher') : __('curriculum.empty_student') }}
-            </p>
+            <p class="px-5 py-6 text-sm text-ink-muted">{{ $canManage ? __('curriculum.empty_teacher') : __('curriculum.empty_student') }}</p>
         @else
-            <ul class="card divide-y divide-line">
+            <ul class="divide-y divide-line">
                 @foreach ($topics as $topic)
-                    <li wire:key="topic-{{ $topic->id }}" class="flex flex-wrap items-center gap-4 px-5 py-4">
-                        <div class="min-w-0 flex-1">
+                    <li wire:key="topic-{{ $topic->id }}" class="px-5 py-4">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xl" aria-hidden="true">{{ $topic->emoji }}</span>
                             <a href="{{ route('topics.show', $topic) }}" class="font-medium hover:underline">{{ $topic->title() }}</a>
-                            <p class="text-sm text-ink-subtle">
-                                {{ trans_choice('topics.pattern_count', $topic->sentence_patterns_count, ['count' => $topic->sentence_patterns_count]) }}
-                                ·
-                                {{ trans_choice('topics.scenario_count', $topic->roleplay_scenarios_count, ['count' => $topic->roleplay_scenarios_count]) }}
-                            </p>
+                            <span class="text-sm text-ink-subtle">· {{ trans_choice('topics.pattern_count', $topic->sentence_patterns_count, ['count' => $topic->sentence_patterns_count]) }}</span>
+                            @unless ($topic->status->isVisibleToStudents())
+                                <span class="rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium">{{ __('curriculum.not_open') }}</span>
+                            @endunless
+
+                            @if ($canManage)
+                                <span class="ml-auto flex flex-wrap gap-1">
+                                    @if ($topic->status->isVisibleToStudents())
+                                        <button type="button" wire:click="unpublish({{ $topic->id }})" class="btn-quiet text-xs">{{ __('curriculum.unpublish') }}</button>
+                                    @else
+                                        <button type="button" wire:click="publish({{ $topic->id }})" class="btn-secondary px-3 py-1.5 text-xs">{{ __('curriculum.publish') }}</button>
+                                    @endif
+                                    <button type="button" wire:click="deleteTopic({{ $topic->id }})"
+                                        wire:confirm="{{ __('curriculum.delete_topic_confirm', ['title' => $topic->title()]) }}"
+                                        class="btn-quiet text-xs text-bad hover:bg-bad-soft">{{ __('skills.delete') }}</button>
+                                </span>
+                            @endif
                         </div>
 
-                        @unless ($topic->status->isVisibleToStudents())
-                            <span class="rounded-full border border-warn/50 bg-warn-soft px-2.5 py-0.5 text-xs font-medium">{{ $topic->status->label() }}</span>
-                        @endunless
-
-                        @if ($canManage)
-                            @if ($topic->status->isVisibleToStudents())
-                                <button type="button" wire:click="unpublish({{ $topic->id }})" class="btn-quiet">{{ __('curriculum.unpublish') }}</button>
-                            @else
-                                <button type="button" wire:click="publish({{ $topic->id }})" class="btn-secondary">{{ __('curriculum.publish') }}</button>
-                            @endif
+                        @if ($topic->roleplayScenarios->isNotEmpty())
+                            <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+                                @foreach ($topic->roleplayScenarios as $scenario)
+                                    <li wire:key="scenario-{{ $scenario->id }}" class="flex items-center gap-3 rounded-xl border border-line bg-ground/60 px-3.5 py-2.5">
+                                        <p class="min-w-0 flex-1 text-sm font-medium">{{ $scenario->title() }}</p>
+                                        <button type="button" wire:click="startRoleplay({{ $scenario->id }})" wire:loading.attr="disabled" wire:target="startRoleplay({{ $scenario->id }})"
+                                            class="inline-flex items-center gap-1.5 rounded-full bg-good px-3.5 py-1.5 text-sm font-semibold text-white transition hover:bg-good/90">
+                                            <x-icon name="phone" class="size-4" /> {{ __('curriculum.call') }}
+                                        </button>
+                                    </li>
+                                @endforeach
+                            </ul>
                         @endif
                     </li>
                 @endforeach
             </ul>
         @endif
+
+        @if ($canManage)
+            <div class="border-t border-line px-5 py-3">
+                <button type="button" wire:click="generate" wire:loading.attr="disabled" wire:target="generate" class="btn-secondary">
+                    <x-icon name="sparkles" class="size-4 text-brand-600" />
+                    <span wire:loading.remove wire:target="generate">{{ __('curriculum.generate') }}</span>
+                    <span wire:loading wire:target="generate">{{ __('curriculum.generating') }}</span>
+                </button>
+            </div>
+        @endif
+    </section>
+
+    {{-- The written skills --}}
+    <section aria-labelledby="skills-title">
+        <h2 id="skills-title" class="mb-3 text-lg font-semibold">{{ __('skills.title') }}</h2>
+
+        <div class="grid gap-4 md:grid-cols-2">
+            @foreach ($skills as $skill)
+                @continue($skill === App\Enums\SkillType::Speaking)
+                @php($list = $exercises[$skill->value] ?? collect())
+                <article wire:key="skill-{{ $skill->value }}" class="card flex flex-col">
+                    <header class="flex items-center gap-3 px-5 pt-5">
+                        <span class="grid size-10 place-items-center rounded-xl {{ $skillTheme[$skill->value] }}"><x-icon :name="$skill->icon()" /></span>
+                        <h3 class="font-semibold">{{ $skill->label() }}</h3>
+                        <span class="ml-auto rounded-full bg-ground px-2.5 py-0.5 text-xs font-semibold text-ink-muted tabular-nums">{{ $list->count() }}</span>
+                    </header>
+
+                    @if ($list->isEmpty())
+                        <p class="flex-1 px-5 py-4 text-sm text-ink-muted">{{ $canManage ? __('skills.empty_teacher') : __('skills.empty_student') }}</p>
+                    @else
+                        <ul class="flex-1 divide-y divide-line px-5 py-2">
+                            @foreach ($list as $exercise)
+                                <li wire:key="exercise-{{ $exercise->id }}" class="flex flex-wrap items-center gap-x-2 gap-y-1 py-2.5">
+                                    <a href="{{ route('exercises.show', $exercise) }}" class="min-w-0 flex-1 text-sm font-medium hover:text-brand-700">
+                                        {{ $exercise->title() }}
+                                        @if ($exercise->questions_count > 0)
+                                            <span class="font-normal text-ink-subtle">· {{ trans_choice('skills.question_count', $exercise->questions_count, ['count' => $exercise->questions_count]) }}</span>
+                                        @endif
+                                    </a>
+
+                                    @if ($canManage)
+                                        @if ($exercise->assignments_count > 0)
+                                            <span class="rounded-full bg-good-soft px-2 py-0.5 text-xs font-medium text-good">{{ __('skills.assigned_count', ['count' => $exercise->assignments_count]) }}</span>
+                                        @elseif ($exercise->isTeacherOwned() || ! $exercise->status->isVisibleToStudents())
+                                            <span class="rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium">{{ __('skills.not_assigned') }}</span>
+                                        @else
+                                            <span class="rounded-full bg-ground px-2 py-0.5 text-xs text-ink-muted">{{ __('skills.shipped') }}</span>
+                                        @endif
+
+                                        <span class="flex items-center">
+                                            @can('update', $exercise)
+                                                <a href="{{ route('exercises.edit', $exercise) }}" class="rounded-md p-1.5 text-ink-subtle transition hover:bg-ground hover:text-ink" title="{{ __('skills.edit') }}">
+                                                    <x-icon name="pencil" class="size-4" /><span class="sr-only">{{ __('skills.edit') }}</span>
+                                                </a>
+                                            @endcan
+                                            <a href="{{ route('exercises.show', $exercise) }}#assign-title" class="rounded-md p-1.5 text-ink-subtle transition hover:bg-ground hover:text-brand-700" title="{{ __('skills.assign_short') }}">
+                                                <x-icon name="send" class="size-4" /><span class="sr-only">{{ __('skills.assign_short') }}</span>
+                                            </a>
+                                            @can('delete', $exercise)
+                                                <button type="button" wire:click="deleteExercise({{ $exercise->id }})"
+                                                    wire:confirm="{{ __('skills.delete_confirm', ['title' => $exercise->title()]) }}"
+                                                    class="rounded-md p-1.5 text-ink-subtle transition hover:bg-bad-soft hover:text-bad" title="{{ __('skills.delete') }}">
+                                                    <x-icon name="trash" class="size-4" /><span class="sr-only">{{ __('skills.delete') }}</span>
+                                                </button>
+                                            @endcan
+                                        </span>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    @if ($canManage)
+                        <footer class="border-t border-line px-5 py-3">
+                            @if ($skill->canBeGenerated())
+                                <button type="button" wire:click="generateExercise('{{ $skill->value }}')" wire:loading.attr="disabled" wire:target="generateExercise"
+                                    class="btn-secondary">
+                                    <x-icon name="sparkles" class="size-4 text-brand-600" />
+                                    <span wire:loading.remove wire:target="generateExercise('{{ $skill->value }}')">{{ __('skills.generate') }}</span>
+                                    <span wire:loading wire:target="generateExercise('{{ $skill->value }}')">{{ __('curriculum.generating') }}</span>
+                                </button>
+                            @else
+                                <a href="{{ route('exercises.create', ['unit' => $unit->id]) }}" class="btn-secondary">
+                                    <x-icon name="plus" class="size-4 text-brand-600" /> {{ __('skills.write_own') }}
+                                </a>
+                            @endif
+                        </footer>
+                    @endif
+                </article>
+            @endforeach
+        </div>
     </section>
 </div>

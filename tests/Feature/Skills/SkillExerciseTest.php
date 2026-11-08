@@ -74,6 +74,7 @@ class SkillExerciseTest extends TestCase
         $exercise = SkillExercise::firstOrFail();
         $this->assertSame(SkillType::Reading, $exercise->skill);
         $this->assertSame(TopicStatus::Draft, $exercise->status, 'generated practice must be reviewed first');
+        $this->assertSame($teacher->id, $exercise->owner_id, 'the exercise belongs to the teacher and reaches students only when assigned');
         $this->assertSame(3, $exercise->questions()->count());
 
         Http::assertSent(function (Request $request) {
@@ -132,7 +133,7 @@ class SkillExerciseTest extends TestCase
         Livewire::actingAs($teacher)
             ->test(UnitPage::class, ['unit' => $unit])
             ->call('generateExercise', 'reading')
-            ->assertSee('Chưa tạo được bài luyện');
+            ->assertSee(__('skills.generate_failed'));
 
         $this->assertDatabaseCount('skill_exercises', 0);
     }
@@ -306,5 +307,19 @@ class SkillExerciseTest extends TestCase
             ->assertOk()
             ->assertSee(__('skills.play'))
             ->assertSee(__('skills.show_script'));
+    }
+
+    public function test_the_listening_page_stops_every_voice_and_carries_the_voice_messages(): void
+    {
+        $exercise = SkillExercise::factory()->listening()->for($this->unitWithFocus(), 'unit')->create();
+
+        // stopSpeaking() also stops the in-page voice used when the browser's own voice never starts.
+        $this->actingAs($this->studentInGrade())
+            ->get(route('exercises.show', $exercise))
+            ->assertOk()
+            ->assertSee('x-on:click="stopSpeaking()"', false)
+            ->assertDontSee('speechSynthesis.cancel()', false)
+            ->assertSee('data-speech-loading="'.e(__('common.speech_loading')).'"', false)
+            ->assertSee('data-speech-failed="'.e(__('common.speech_failed')).'"', false);
     }
 }
